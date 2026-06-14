@@ -288,9 +288,31 @@ input.mini { width: 100%; }
     <h4 id="wsTitle">中継を見る</h4>
     <div class="sm" id="wsSub"></div>
     <div id="wsLinks"></div>
-    <div style="margin:10px 0 4px;padding:8px 10px;background:#fff8e1;border-radius:8px;font-size:12px;color:#7a5c00;line-height:1.5">
-      ⚠️ VTVgo &amp; FPT Play &amp; K+ yêu cầu IP Việt Nam.<br>
-      Nếu bạn ở nước ngoài, hãy dùng VPN có máy chủ tại Việt Nam.
+    <div id="wsVPN" style="display:none;margin:10px 0 4px">
+      <div style="padding:10px 12px;background:#fff3e0;border-radius:10px;font-size:12px;color:#7a4000;line-height:1.6;border:1px solid #ffcc80">
+        <b style="font-size:13px">🌐 Cần IP Việt Nam để xem</b><br>
+        IP hiện tại của bạn <b id="wsIPInfo">không phải Việt Nam</b>. Hãy dùng VPN:<br>
+        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+          <a href="https://www.vpngate.net/en/howto_openvpn.aspx#google_play" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
+            <span style="font-size:20px">🔓</span>
+            <span><b>VPN Gate</b> — Miễn phí, server Việt Nam<br><small style="color:#888;font-weight:400">Dự án học thuật, hoàn toàn miễn phí</small></span>
+          </a>
+          <a href="https://psiphon.ca/vi/download.html" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
+            <span style="font-size:20px">🛡️</span>
+            <span><b>Psiphon</b> — Miễn phí cho mobile/PC<br><small style="color:#888;font-weight:400">iOS · Android · Windows · Mac</small></span>
+          </a>
+          <a href="https://protonvpn.com/" target="_blank" rel="noopener"
+             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
+            <span style="font-size:20px">⚡</span>
+            <span><b>Proton VPN</b> — Gói miễn phí ổn định<br><small style="color:#888;font-weight:400">Tốc độ cao · Không giới hạn băng thông</small></span>
+          </a>
+        </div>
+        <div style="margin-top:8px;font-size:11px;color:#a06030">
+          💡 Sau khi bật VPN chọn server Việt Nam → tải lại trang → nhấn nút phát lại
+        </div>
+      </div>
     </div>
     <button class="sbtn sbtn-ghost" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
   </div>
@@ -799,6 +821,17 @@ function applyAuto(){
 
 /* ===================== 中継シート ===================== */
 const sheetEl=document.getElementById("watchSheet");
+let _ipCC=null,_ipChecked=false;
+async function detectCountry(){
+  if(_ipChecked)return _ipCC;
+  _ipChecked=true;
+  try{
+    const r=await fetch("https://api.country.is/",{signal:AbortSignal.timeout(4000)});
+    const j=await r.json();
+    _ipCC=j.country||"";
+  }catch{_ipCC="";}
+  return _ipCC;
+}
 function openWatch(id){
   const m=byId(id);
   document.getElementById("wsTitle").textContent=`${m.h} vs ${m.a}`;
@@ -808,6 +841,16 @@ function openWatch(id){
     <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
     <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?'<span class="wfree">Miễn phí</span>':""}</a>`).join("");
   sheetEl.classList.add("show");
+  const vpnDiv=document.getElementById("wsVPN");
+  const ipInfo=document.getElementById("wsIPInfo");
+  detectCountry().then(cc=>{
+    if(cc==="VN"){
+      vpnDiv.style.display="none";
+    }else{
+      ipInfo.textContent=cc?`từ ${cc} (không phải Việt Nam)`:"không xác định được";
+      vpnDiv.style.display="block";
+    }
+  });
 }
 function closeWatch(){sheetEl.classList.remove("show");}
 sheetEl.addEventListener("click",e=>{if(e.target===sheetEl)closeWatch();});
