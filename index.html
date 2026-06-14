@@ -631,7 +631,11 @@ let RESULTS={};
 let liveOK=false,keyMissing=false,lastSync=null,timers={},swReg=null;
 
 /* Netlify Functions の自動エンドポイント（デプロイ先が Netlify なら自動使用） */
-const NETLIFY_LIVE = location.protocol!=="file:" ? "/.netlify/functions/live" : "";
+const NETLIFY_LIVE = location.hostname.includes("netlify.app")
+  ? "/.netlify/functions/live"
+  : location.protocol!=="file:"
+    ? "https://harmonious-wisp-02cafb.netlify.app/.netlify/functions/live"
+    : "";
 
 const save=()=>{localStorage.setItem(LS.notif,JSON.stringify([...notifSet]));localStorage.setItem(LS.opts,JSON.stringify(opts));localStorage.setItem(LS.fav,favTeam);};
 const byId=id=>MATCHES.find(m=>m.id===id);
