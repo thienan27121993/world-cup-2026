@@ -312,6 +312,10 @@ input.mini { width: 100%; }
         <div style="margin-top:8px;font-size:11px;color:#a06030">
           💡 Sau khi bật VPN chọn server Việt Nam → tải lại trang → nhấn nút phát lại
         </div>
+        <a id="wsContinueUrl" href="#" target="_blank" rel="noopener"
+           style="display:block;text-align:center;margin-top:8px;font-size:11px;color:#aaa;text-decoration:underline">
+          → Vẫn mở VTVgo (không dùng VPN)
+        </a>
       </div>
     </div>
     <button class="sbtn sbtn-ghost" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
@@ -387,12 +391,17 @@ const MATCHES=[
   M(106,"2026-07-20T04:00:00+09:00","決勝","決勝","WORLD CHAMPION","NY/NJ メットライフ",F.TBD,F.TBD,{knock:true,feat:true}),
 ];
 const STREAMS={
-  all:[{n:"VTVgo",d:"VTV phát sóng trực tiếp · cần IP Việt Nam",u:"https://vtvgo.vn",c:"#fff",bg:"#c8102e",free:true},
-       {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
-       {n:"K+",d:"Bình luận tiếng Việt · kênh K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}],
-  jp:[{n:"VTVgo",d:"Trận Nhật Bản · phát sóng trực tiếp trên VTV",u:"https://vtvgo.vn",c:"#fff",bg:"#c8102e",free:true},
-      {n:"FPT Play",d:"Xem HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
-      {n:"K+",d:"Bình luận tiếng Việt · gói K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}]
+  all:[
+    {n:"VTVgo · VTV1",d:"Kênh chính phát WC · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
+    {n:"VTVgo · VTV3",d:"Thể thao & giải trí · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv3-3.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
+    {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+    {n:"K+",d:"Bình luận tiếng Việt · kênh K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
+  ],
+  jp:[
+    {n:"VTVgo · VTV1",d:"Trận Nhật Bản · VTV1 trực tiếp · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
+    {n:"FPT Play",d:"Xem HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+    {n:"K+",d:"Bình luận tiếng Việt · gói K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
+  ]
 };
 
 /* ===================== 状態 ===================== */
@@ -821,7 +830,7 @@ function applyAuto(){
 
 /* ===================== 中継シート ===================== */
 const sheetEl=document.getElementById("watchSheet");
-let _ipCC=null,_ipChecked=false;
+let _ipCC=null,_ipChecked=false,_wsLinks=[];
 async function detectCountry(){
   if(_ipChecked)return _ipCC;
   _ipChecked=true;
@@ -836,21 +845,25 @@ function openWatch(id){
   const m=byId(id);
   document.getElementById("wsTitle").textContent=`${m.h} vs ${m.a}`;
   document.getElementById("wsSub").textContent=`${dLabelFull(dt(m))} ${fmtTime(m)} JST ・ 📍${m.city}`;
-  const links=m.jp?STREAMS.jp:STREAMS.all;
-  document.getElementById("wsLinks").innerHTML=links.map(s=>`<a class="wlink" href="${s.u}" target="_blank" rel="noopener">
+  _wsLinks=m.jp?STREAMS.jp:STREAMS.all;
+  document.getElementById("wsLinks").innerHTML=_wsLinks.map((s,i)=>`<a class="wlink" href="${s.u}" ${s.vpn?`onclick="return wlinkVPN(event,${i})"`:`target="_blank" rel="noopener"`}>
     <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
     <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?'<span class="wfree">Miễn phí</span>':""}</a>`).join("");
+  document.getElementById("wsVPN").style.display="none";
   sheetEl.classList.add("show");
+}
+async function wlinkVPN(e,idx){
+  e.preventDefault();
+  const s=_wsLinks[idx];
+  if(!s)return false;
+  const cc=await detectCountry();
+  if(cc==="VN"){window.open(s.u,"_blank","noopener");return false;}
+  document.getElementById("wsIPInfo").textContent=cc?`từ ${cc} (không phải Việt Nam)`:"không xác định";
+  document.getElementById("wsContinueUrl").href=s.u;
   const vpnDiv=document.getElementById("wsVPN");
-  const ipInfo=document.getElementById("wsIPInfo");
-  detectCountry().then(cc=>{
-    if(cc==="VN"){
-      vpnDiv.style.display="none";
-    }else{
-      ipInfo.textContent=cc?`từ ${cc} (không phải Việt Nam)`:"không xác định được";
-      vpnDiv.style.display="block";
-    }
-  });
+  vpnDiv.style.display="block";
+  vpnDiv.scrollIntoView({behavior:"smooth",block:"nearest"});
+  return false;
 }
 function closeWatch(){sheetEl.classList.remove("show");}
 sheetEl.addEventListener("click",e=>{if(e.target===sheetEl)closeWatch();});
