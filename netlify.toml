@@ -1,0 +1,6 @@
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Permissions-Policy = "notifications=*"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
