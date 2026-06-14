@@ -251,6 +251,9 @@ input.mini { width: 100%; }
 .wlink b { font-size: 13.5px; font-weight: 700; }
 .wlink small { display: block; font-size: 11px; color: var(--muted); margin-top: 1px; }
 .wfree { margin-left: auto; background: var(--safe-bg); color: var(--safe); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(10,124,82,.2); white-space: nowrap; }
+.lang-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.lang-tab { flex: 1; padding: 7px 4px; border: 1.5px solid var(--line2); border-radius: 9px; background: var(--card2); color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; transition: .15s; }
+.lang-tab.active { border-color: var(--accent); background: var(--accent); color: #fff; }
 
 /* ── MISC ─────────────────────────────────────── */
 .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: 13px; }
@@ -287,37 +290,12 @@ input.mini { width: 100%; }
     <div class="sheet-handle"></div>
     <h4 id="wsTitle">中継を見る</h4>
     <div class="sm" id="wsSub"></div>
-    <div id="wsLinks"></div>
-    <div id="wsVPN" style="display:none;margin:10px 0 4px">
-      <div style="padding:10px 12px;background:#fff3e0;border-radius:10px;font-size:12px;color:#7a4000;line-height:1.6;border:1px solid #ffcc80">
-        <b style="font-size:13px">🌐 Cần IP Việt Nam để xem</b><br>
-        IP hiện tại của bạn <b id="wsIPInfo">không phải Việt Nam</b>. Hãy dùng VPN:<br>
-        <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
-          <a href="https://www.vpngate.net/en/howto_openvpn.aspx#google_play" target="_blank" rel="noopener"
-             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
-            <span style="font-size:20px">🔓</span>
-            <span><b>VPN Gate</b> — Miễn phí, server Việt Nam<br><small style="color:#888;font-weight:400">Dự án học thuật, hoàn toàn miễn phí</small></span>
-          </a>
-          <a href="https://psiphon.ca/vi/download.html" target="_blank" rel="noopener"
-             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
-            <span style="font-size:20px">🛡️</span>
-            <span><b>Psiphon</b> — Miễn phí cho mobile/PC<br><small style="color:#888;font-weight:400">iOS · Android · Windows · Mac</small></span>
-          </a>
-          <a href="https://protonvpn.com/" target="_blank" rel="noopener"
-             style="display:flex;align-items:center;gap:8px;padding:8px 10px;background:#fff;border-radius:8px;text-decoration:none;color:#1a1a2e;border:1px solid #e0e0e0;font-weight:600">
-            <span style="font-size:20px">⚡</span>
-            <span><b>Proton VPN</b> — Gói miễn phí ổn định<br><small style="color:#888;font-weight:400">Tốc độ cao · Không giới hạn băng thông</small></span>
-          </a>
-        </div>
-        <div style="margin-top:8px;font-size:11px;color:#a06030">
-          💡 Sau khi bật VPN chọn server Việt Nam → tải lại trang → nhấn nút phát lại
-        </div>
-        <a id="wsContinueUrl" href="#" target="_blank" rel="noopener"
-           style="display:block;text-align:center;margin-top:8px;font-size:11px;color:#aaa;text-decoration:underline">
-          → Vẫn mở VTVgo (không dùng VPN)
-        </a>
-      </div>
+    <div class="lang-tabs">
+      <button class="lang-tab" id="ltVN" onclick="setLangTab('vn')">🇻🇳 Việt Nam</button>
+      <button class="lang-tab" id="ltJP" onclick="setLangTab('jp')">🇯🇵 日本語</button>
+      <button class="lang-tab" id="ltEN" onclick="setLangTab('en')">🇺🇸 English</button>
     </div>
+    <div id="wsLinks"></div>
     <button class="sbtn sbtn-ghost" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
   </div>
 </div>
@@ -390,22 +368,57 @@ const MATCHES=[
   M(105,"2026-07-19T05:00:00+09:00","3位","3位決定戦","勝ち上がり","マイアミ",F.TBD,F.TBD,{knock:true,tbd:true}),
   M(106,"2026-07-20T04:00:00+09:00","決勝","決勝","WORLD CHAMPION","NY/NJ メットライフ",F.TBD,F.TBD,{knock:true,feat:true}),
 ];
+/* proxy prefix: CroxyProxy で geo-restriction を自動回避 */
+const _PX="https://www.croxyproxy.rocks/?url=";
 const STREAMS={
-  all:[
-    {n:"VTVgo · VTV1",d:"Kênh chính phát WC · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
-    {n:"VTVgo · VTV3",d:"Thể thao & giải trí · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv3-3.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
-    {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
-    {n:"K+",d:"Bình luận tiếng Việt · kênh K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
-  ],
-  jp:[
-    {n:"VTVgo · VTV1",d:"Trận Nhật Bản · VTV1 trực tiếp · miễn phí",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true,vpn:true},
-    {n:"FPT Play",d:"Xem HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
-    {n:"K+",d:"Bình luận tiếng Việt · gói K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
-  ]
+  vn:{
+    free:"Miễn phí",
+    all:[
+      {n:"VTVgo · VTV1",d:"Kênh chính WC · tự động qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"VTVgo · VTV3",d:"Thể thao & giải trí · qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv3-3.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+      {n:"K+",d:"Bình luận tiếng Việt · K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
+    ],
+    jp:[
+      {n:"VTVgo · VTV1",d:"Trận Nhật Bản · tự động qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"FPT Play",d:"HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+      {n:"K+",d:"Tiếng Việt · K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
+    ]
+  },
+  jp:{
+    free:"無料",
+    all:[
+      {n:"DAZN",d:"全104試合をライブ配信",u:"https://www.dazn.com/ja-JP/home",c:"#fff",bg:"#111"},
+      {n:"NHKプラス",d:"NHK中継の同時・見逃し配信",u:"https://plus.nhk.jp/",c:"#fff",bg:"#0a58c2",free:true},
+      {n:"TVer",d:"日テレ・フジ中継を無料配信",u:"https://tver.jp/",c:"#fff",bg:"#00abc1",free:true},
+      {n:"ABEMA",d:"スポーツライブ無料配信",u:"https://abema.tv/",c:"#00d4aa",bg:"#111",free:true}
+    ],
+    jp:[
+      {n:"DAZN",d:"日本代表戦は無料ライブ配信",u:"https://www.dazn.com/ja-JP/home",c:"#fff",bg:"#111",free:true},
+      {n:"NHK / NHKプラス",d:"グループ2試合を地上波・配信",u:"https://plus.nhk.jp/",c:"#fff",bg:"#0a58c2",free:true},
+      {n:"日テレ / TVer",d:"グループ1試合を地上波・無料配信",u:"https://tver.jp/",c:"#fff",bg:"#e60012",free:true},
+      {n:"ABEMA",d:"スポーツ無料ライブ配信",u:"https://abema.tv/",c:"#00d4aa",bg:"#111",free:true}
+    ]
+  },
+  en:{
+    free:"FREE",
+    all:[
+      {n:"ESPN+",d:"Live matches · subscription",u:"https://www.espnplus.com/",c:"#fff",bg:"#cc0001"},
+      {n:"FOX Sports",d:"Broadcast matches on FOX / FS1",u:"https://www.foxsports.com/soccer/fifa-world-cup",c:"#fff",bg:"#003087",free:true},
+      {n:"Tubi TV",d:"Free ad-supported streaming",u:"https://tubitv.com/",c:"#fff",bg:"#fa4716",free:true},
+      {n:"Peacock",d:"NBC Sports live coverage",u:"https://www.peacocktv.com/",c:"#fff",bg:"#000"}
+    ],
+    jp:[
+      {n:"ESPN+",d:"USA matchups · live streaming",u:"https://www.espnplus.com/",c:"#fff",bg:"#cc0001"},
+      {n:"FOX Sports",d:"Free broadcast on FOX network",u:"https://www.foxsports.com/soccer/fifa-world-cup",c:"#fff",bg:"#003087",free:true},
+      {n:"Tubi TV",d:"Free · no subscription needed",u:"https://tubitv.com/",c:"#fff",bg:"#fa4716",free:true}
+    ]
+  }
 };
 
 /* ===================== 状態 ===================== */
-const LS={notif:"wc26d_notif",opts:"wc26d_opts",fav:"wc26d_fav"};
+const LS={notif:"wc26d_notif",opts:"wc26d_opts",fav:"wc26d_fav",lang:"wc26d_lang"};
+let langMode=localStorage.getItem(LS.lang)||"vn";
 let notifSet=new Set(JSON.parse(localStorage.getItem(LS.notif)||"[]"));
 let opts=Object.assign(
   {lead:30,enabled:false,jpAuto:true,featAuto:false,apiBase:"",fdKey:"",demo:false},
@@ -830,40 +843,32 @@ function applyAuto(){
 
 /* ===================== 中継シート ===================== */
 const sheetEl=document.getElementById("watchSheet");
-let _ipCC=null,_ipChecked=false,_wsLinks=[];
-async function detectCountry(){
-  if(_ipChecked)return _ipCC;
-  _ipChecked=true;
-  try{
-    const r=await fetch("https://api.country.is/",{signal:AbortSignal.timeout(4000)});
-    const j=await r.json();
-    _ipCC=j.country||"";
-  }catch{_ipCC="";}
-  return _ipCC;
+let _curMatchId=null;
+function renderWatchLinks(){
+  const m=byId(_curMatchId);
+  const mode=STREAMS[langMode];
+  const links=m.jp?(mode.jp||mode.all):mode.all;
+  const badge=mode.free;
+  document.getElementById("wsLinks").innerHTML=links.map(s=>`<a class="wlink" href="${s.u}" target="_blank" rel="noopener">
+    <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
+    <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?`<span class="wfree">${badge}</span>`:""}</a>`).join("");
+  ["vn","jp","en"].forEach(k=>{
+    const t=document.getElementById("lt"+k.toUpperCase());
+    if(t)t.classList.toggle("active",k===langMode);
+  });
+}
+function setLangTab(mode){
+  langMode=mode;
+  localStorage.setItem(LS.lang,mode);
+  renderWatchLinks();
 }
 function openWatch(id){
+  _curMatchId=id;
   const m=byId(id);
   document.getElementById("wsTitle").textContent=`${m.h} vs ${m.a}`;
   document.getElementById("wsSub").textContent=`${dLabelFull(dt(m))} ${fmtTime(m)} JST ・ 📍${m.city}`;
-  _wsLinks=m.jp?STREAMS.jp:STREAMS.all;
-  document.getElementById("wsLinks").innerHTML=_wsLinks.map((s,i)=>`<a class="wlink" href="${s.u}" ${s.vpn?`onclick="return wlinkVPN(event,${i})"`:`target="_blank" rel="noopener"`}>
-    <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
-    <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?'<span class="wfree">Miễn phí</span>':""}</a>`).join("");
-  document.getElementById("wsVPN").style.display="none";
+  renderWatchLinks();
   sheetEl.classList.add("show");
-}
-async function wlinkVPN(e,idx){
-  e.preventDefault();
-  const s=_wsLinks[idx];
-  if(!s)return false;
-  const cc=await detectCountry();
-  if(cc==="VN"){window.open(s.u,"_blank","noopener");return false;}
-  document.getElementById("wsIPInfo").textContent=cc?`từ ${cc} (không phải Việt Nam)`:"không xác định";
-  document.getElementById("wsContinueUrl").href=s.u;
-  const vpnDiv=document.getElementById("wsVPN");
-  vpnDiv.style.display="block";
-  vpnDiv.scrollIntoView({behavior:"smooth",block:"nearest"});
-  return false;
 }
 function closeWatch(){sheetEl.classList.remove("show");}
 sheetEl.addEventListener("click",e=>{if(e.target===sheetEl)closeWatch();});
