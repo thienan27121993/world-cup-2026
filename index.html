@@ -41,6 +41,7 @@
 
   --nav-h: 60px;
   --r: 14px;
+  --accent: #1a3a6e;
 }
 
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -849,10 +850,10 @@ function card(m){
 /* ── ヒーロー ─────────────────────────────────── */
 let cdTimer=null;
 function renderHero(){
-  const t=now();
+  const now_=now();
   const liveM=MATCHES.filter(m=>!m.knock&&status(m)==="LIVE").sort((a,b)=>(b.jp-a.jp)||(dt(a)-dt(b)))[0];
-  const jpNext=MATCHES.filter(m=>m.jp&&dt(m)>=t).sort((a,b)=>dt(a)-dt(b))[0];
-  const anyNext=MATCHES.filter(m=>dt(m)>=t&&!m.tbd).sort((a,b)=>dt(a)-dt(b))[0];
+  const jpNext=MATCHES.filter(m=>m.jp&&dt(m)>=now_).sort((a,b)=>dt(a)-dt(b))[0];
+  const anyNext=MATCHES.filter(m=>dt(m)>=now_&&!m.tbd).sort((a,b)=>dt(a)-dt(b))[0];
   const m=liveM||jpNext||anyNext;
   if(!m){heroSlot.innerHTML="";return;}
   const live=!!(liveM&&m===liveM),r=res(m);
@@ -1138,7 +1139,7 @@ document.querySelectorAll(".nbtn").forEach(b=>{
 
 /* ===================== トースト ===================== */
 let tT=null;
-function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>t.classList.remove("show"),2800);}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>el.classList.remove("show"),2800);}
 
 /* ===================== 起動 ===================== */
 async function init(){
