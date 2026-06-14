@@ -288,6 +288,10 @@ input.mini { width: 100%; }
     <h4 id="wsTitle">中継を見る</h4>
     <div class="sm" id="wsSub"></div>
     <div id="wsLinks"></div>
+    <div style="margin:10px 0 4px;padding:8px 10px;background:#fff8e1;border-radius:8px;font-size:12px;color:#7a5c00;line-height:1.5">
+      ⚠️ VTVgo &amp; FPT Play &amp; K+ yêu cầu IP Việt Nam.<br>
+      Nếu bạn ở nước ngoài, hãy dùng VPN có máy chủ tại Việt Nam.
+    </div>
     <button class="sbtn sbtn-ghost" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
   </div>
 </div>
@@ -361,12 +365,12 @@ const MATCHES=[
   M(106,"2026-07-20T04:00:00+09:00","決勝","決勝","WORLD CHAMPION","NY/NJ メットライフ",F.TBD,F.TBD,{knock:true,feat:true}),
 ];
 const STREAMS={
-  all:[{n:"DAZN",d:"全104試合をライブ配信",u:"https://www.dazn.com/ja-JP/home",c:"#fff",bg:"#111"},
-       {n:"NHKプラス",d:"NHK中継の同時・見逃し配信",u:"https://plus.nhk.jp/",c:"#fff",bg:"#0a58c2"},
-       {n:"TVer",d:"日テレ・フジ中継を無料配信",u:"https://tver.jp/",c:"#fff",bg:"#00abc1",free:true}],
-  jp:[{n:"DAZN",d:"日本代表戦は無料ライブ配信",u:"https://www.dazn.com/ja-JP/home",c:"#fff",bg:"#111",free:true},
-      {n:"NHK / NHKプラス",d:"グループ2試合を地上波・配信",u:"https://plus.nhk.jp/",c:"#fff",bg:"#0a58c2",free:true},
-      {n:"日本テレビ / TVer",d:"グループ1試合を地上波・無料配信",u:"https://tver.jp/",c:"#fff",bg:"#e60012",free:true}]
+  all:[{n:"VTVgo",d:"VTV phát sóng trực tiếp · cần IP Việt Nam",u:"https://vtvgo.vn",c:"#fff",bg:"#c8102e",free:true},
+       {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+       {n:"K+",d:"Bình luận tiếng Việt · kênh K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}],
+  jp:[{n:"VTVgo",d:"Trận Nhật Bản · phát sóng trực tiếp trên VTV",u:"https://vtvgo.vn",c:"#fff",bg:"#c8102e",free:true},
+      {n:"FPT Play",d:"Xem HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+      {n:"K+",d:"Bình luận tiếng Việt · gói K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}]
 };
 
 /* ===================== 状態 ===================== */
@@ -802,7 +806,7 @@ function openWatch(id){
   const links=m.jp?STREAMS.jp:STREAMS.all;
   document.getElementById("wsLinks").innerHTML=links.map(s=>`<a class="wlink" href="${s.u}" target="_blank" rel="noopener">
     <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
-    <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?'<span class="wfree">無料</span>':""}</a>`).join("");
+    <div><b>${s.n}</b><small>${s.d}</small></div>${s.free?'<span class="wfree">Miễn phí</span>':""}</a>`).join("");
   sheetEl.classList.add("show");
 }
 function closeWatch(){sheetEl.classList.remove("show");}
