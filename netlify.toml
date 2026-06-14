@@ -4,3 +4,11 @@
     Permissions-Policy = "notifications=*"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+
+[[redirects]]
+  from = "/api/live"
+  to = "/.netlify/functions/live"
+  status = 200
+
+[functions]
+  directory = "netlify/functions"

@@ -3,41 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#08090e">
+<meta name="theme-color" content="#ffffff">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon.svg">
 <title>World Cup 2026</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=DM+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
-/* ── DESIGN TOKENS ──────────────────────────── */
+/* ── LIGHT THEME TOKENS ─────────────────────── */
 :root {
-  --bg:       #08090e;
-  --card:     #0f1421;
-  --card2:    #171e2f;
-  --line:     rgba(255,255,255,.07);
-  --line2:    rgba(255,255,255,.13);
-  --txt:      #dde3f5;
-  --muted:    #5e7092;
-  --dim:      #2d3a4e;
+  --bg:     #eaecf4;
+  --card:   #ffffff;
+  --card2:  #f3f5fb;
+  --line:   rgba(20,30,80,.08);
+  --line2:  rgba(20,30,80,.14);
+  --shadow: 0 1px 4px rgba(20,30,80,.08), 0 0 0 1px rgba(20,30,80,.05);
 
-  --gold:     #f5a623;
-  --gold-bg:  rgba(245,166,35,.10);
-  --jp:       #ff3b5c;
-  --jp-bg:    rgba(255,59,92,.11);
-  --knock:    #38c9fb;
-  --knock-bg: rgba(56,201,251,.09);
-  --live:     #ff4757;
-  --live-bg:  rgba(255,71,87,.13);
-  --safe:     #27ae85;
-  --safe-bg:  rgba(39,174,133,.10);
+  --txt:    #0d1427;
+  --muted:  #677089;
+  --dim:    #b4bcd0;
 
-  --nav-h: 64px;
+  --gold:     #b85c00;
+  --gold-bg:  rgba(184,92,0,.08);
+  --jp:       #cc1f36;
+  --jp-bg:    rgba(204,31,54,.07);
+  --knock:    #1a5fd6;
+  --knock-bg: rgba(26,95,214,.08);
+  --live:     #e53935;
+  --live-bg:  rgba(229,57,53,.09);
+  --safe:     #0a7c52;
+  --safe-bg:  rgba(10,124,82,.09);
+  --feat:     #8a5200;
+  --feat-bg:  rgba(138,82,0,.07);
+
+  --nav-h: 60px;
   --r: 14px;
 }
+
 *, *::before, *::after { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 html, body { margin: 0; padding: 0; }
 body {
@@ -54,200 +59,204 @@ body {
 /* ── HEADER ─────────────────────────────────── */
 header {
   position: sticky; top: 0; z-index: 40;
-  background: linear-gradient(180deg, var(--bg) 70%, rgba(8,9,14,0) 100%);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  padding: max(16px, env(safe-area-inset-top)) 16px 10px;
+  background: rgba(255,255,255,.97);
+  border-bottom: 1px solid var(--line2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: max(14px, env(safe-area-inset-top)) 16px 10px;
   max-width: 540px; margin: 0 auto;
 }
 .hrow { display: flex; align-items: center; gap: 10px; }
 .logo {
   width: 36px; height: 36px; border-radius: 10px;
-  background: linear-gradient(145deg, #1c2c4a 0%, #0f1825 100%);
-  border: 1px solid rgba(245,166,35,.25);
+  background: linear-gradient(135deg, #1a3a6e 0%, #0d2145 100%);
   display: grid; place-items: center; flex: 0 0 auto;
 }
-.logo span { font-family: 'Fraunces', serif; font-weight: 700; font-size: 14px; color: var(--gold); }
-.brand-name { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; line-height: 1.1; letter-spacing: -.2px; }
+.logo span { font-family: 'Fraunces', serif; font-weight: 700; font-size: 14px; color: #f5c842; }
+.brand-name { font-family: 'Fraunces', serif; font-weight: 700; font-size: 18px; line-height: 1.1; color: var(--txt); }
 .brand-sub { font-size: 10px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 1px; }
 .ldot { margin-left: auto; display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--muted); white-space: nowrap; }
 .ldot-i { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); transition: background .3s; flex: 0 0 auto; }
 .ldot.on .ldot-i { background: var(--live); animation: pulse 2s infinite; }
-.ldot.on { color: var(--live); }
-@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(255,71,87,.6)} 60%{box-shadow:0 0 0 6px rgba(255,71,87,0)} }
+.ldot.on { color: var(--live); font-weight: 700; }
+@keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(229,57,53,.5)} 55%{box-shadow:0 0 0 6px rgba(229,57,53,0)} }
 
 /* ── HERO ────────────────────────────────────── */
 #heroSlot { margin-top: 10px; }
 .hero {
   border-radius: var(--r);
-  background: var(--card);
-  border: 1px solid var(--line2);
+  background: #1a2a4e;
+  color: #e8ecf8;
   overflow: hidden;
+  box-shadow: 0 2px 12px rgba(10,20,60,.18);
 }
-.hero.jp    { border-color: rgba(255,59,92,.35); background: linear-gradient(135deg, rgba(255,59,92,.08) 0%, var(--card) 55%); }
-.hero.liveh { border-color: rgba(255,71,87,.45); }
+.hero.jp    { background: linear-gradient(135deg, #4a0d18 0%, #1a2a4e 60%); }
+.hero.liveh { background: linear-gradient(135deg, #3a0d0d 0%, #1a2a4e 60%); }
 .hero-top {
-  display: flex; align-items: center; gap: 7px;
-  padding: 10px 14px 8px;
-  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted);
-  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 15px 9px;
+  font-size: 10.5px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: rgba(200,210,240,.7);
+  border-bottom: 1px solid rgba(255,255,255,.1);
 }
-.live-badge { background: var(--live); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; letter-spacing: .5px; }
+.live-badge {
+  background: var(--live); color: #fff;
+  padding: 2px 8px; border-radius: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: .5px;
+  animation: livefade 1.4s ease-in-out infinite alternate;
+}
+@keyframes livefade { from{opacity:1} to{opacity:.7} }
 .hero-body { padding: 14px 16px 12px; }
-.hero-teams {
-  display: grid; grid-template-columns: 1fr 80px 1fr;
-  align-items: center; gap: 6px;
-}
+.hero-teams { display: grid; grid-template-columns: 1fr 86px 1fr; align-items: center; gap: 4px; }
 .hteam { text-align: center; }
-.hteam .hfl { font-size: 36px; line-height: 1; display: block; }
-.hteam .hnm { font-size: 13px; font-weight: 700; margin-top: 5px; }
+.hteam .hfl { font-size: 38px; line-height: 1; display: block; }
+.hteam .hnm { font-size: 13px; font-weight: 700; margin-top: 5px; color: #e8ecf8; }
 .hmid { text-align: center; }
-.hmid .hsc { font-family: 'DM Mono', monospace; font-size: 32px; font-weight: 500; color: var(--gold); display: block; line-height: 1; }
-.hmid .hvs { font-size: 18px; color: var(--muted); font-weight: 700; }
-.hero-foot { padding: 0 16px 13px; font-size: 11px; color: var(--muted); }
-.cd-row { display: flex; gap: 7px; margin-top: 12px; }
-.cd-box { flex: 1; background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 8px 4px; text-align: center; }
-.cd-box b { display: block; font-family: 'DM Mono', monospace; font-size: 22px; line-height: 1; }
-.cd-box small { font-size: 9px; letter-spacing: 1.2px; color: var(--muted); text-transform: uppercase; }
+.hmid .hsc { font-family: 'DM Mono', monospace; font-size: 34px; font-weight: 500; color: #f5c842; display: block; line-height: 1; }
+.hmid .hvs { font-size: 20px; color: rgba(200,210,240,.5); font-weight: 700; }
+.hero-foot { padding: 0 16px 13px; font-size: 11.5px; color: rgba(180,195,230,.7); }
+.cd-row { display: flex; gap: 8px; margin-top: 12px; }
+.cd-box { flex: 1; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); border-radius: 10px; padding: 8px 4px; text-align: center; }
+.cd-box b { display: block; font-family: 'DM Mono', monospace; font-size: 22px; color: #fff; line-height: 1; }
+.cd-box small { font-size: 9px; letter-spacing: 1.2px; color: rgba(200,210,240,.6); text-transform: uppercase; }
 
-/* ── WRAP ───────────────────────────────────── */
+/* ── WRAP ─────────────────────────────────────── */
 .wrap { max-width: 540px; margin: 0 auto; padding: 0 14px 4px; }
 
-/* ── DATE HEADER ─────────────────────────────── */
+/* ── DATE HEADER ──────────────────────────────── */
 .day-hd { display: flex; align-items: center; gap: 8px; margin: 18px 2px 9px; }
-.day-hd b { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; }
-.today-chip { background: var(--knock-bg); color: var(--knock); font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 5px; letter-spacing: 1px; border: 1px solid rgba(56,201,251,.3); }
+.day-hd b { font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; color: var(--txt); }
+.today-chip { background: var(--knock-bg); color: var(--knock); font-size: 9px; font-weight: 700; padding: 2px 8px; border-radius: 5px; letter-spacing: 1px; border: 1px solid rgba(26,95,214,.2); }
 
 /* ── MATCH CARD ──────────────────────────────── */
-.mc { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 9px; overflow: hidden; }
-.mc.jp      { border-color: rgba(255,59,92,.32); background: linear-gradient(170deg, rgba(255,59,92,.07) 0%, var(--card) 55%); }
-.mc.feat    { border-color: rgba(245,166,35,.22); }
-.mc.knock   { border-color: rgba(56,201,251,.2); }
-.mc.livegame{ border-color: rgba(255,71,87,.45); }
-.mc.done    { opacity: .42; }
+.mc { background: var(--card); border-radius: var(--r); margin-bottom: 9px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+.mc.jp      { border-color: rgba(204,31,54,.2); border-left: 3px solid var(--jp); }
+.mc.feat    { border-left: 3px solid var(--gold); }
+.mc.knock   { border-left: 3px solid var(--knock); }
+.mc.livegame{ border-color: rgba(229,57,53,.3); border-left: 3px solid var(--live); }
+.mc.done    { opacity: .55; }
 
-.mc-bar { height: 3px; background: var(--dim); }
-.mc.jp     .mc-bar { background: var(--jp); }
-.mc.feat   .mc-bar { background: var(--gold); }
-.mc.knock  .mc-bar { background: var(--knock); }
-.mc.livegame .mc-bar { background: var(--live); animation: livebar 1.5s ease-in-out infinite alternate; }
-@keyframes livebar { from{opacity:1} to{opacity:.5} }
-
-.mc-top { display: flex; align-items: center; gap: 6px; padding: 7px 13px 6px; border-bottom: 1px solid var(--line); }
-.badge { font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: .3px; white-space: nowrap; }
+.mc-top { display: flex; align-items: center; gap: 6px; padding: 7px 13px 6px; background: var(--card2); border-bottom: 1px solid var(--line); }
+.badge { font-size: 9.5px; font-weight: 700; padding: 2px 7px; border-radius: 4px; letter-spacing: .3px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px; }
 .bl { background: var(--live);     color: #fff; }
-.bj { background: var(--jp-bg);   color: #ff8fa3; border: 1px solid rgba(255,59,92,.28); }
-.bf { background: var(--gold-bg); color: #fbbf24; border: 1px solid rgba(245,166,35,.28); }
-.bk { background: var(--knock-bg);color: var(--knock); border: 1px solid rgba(56,201,251,.28); }
-.bg { background: var(--card2);   color: var(--muted); border: 1px solid var(--line2); }
+.bj { background: var(--jp-bg);   color: var(--jp); border: 1px solid rgba(204,31,54,.2); }
+.bf { background: var(--feat-bg); color: var(--feat); border: 1px solid rgba(138,82,0,.18); }
+.bk { background: var(--knock-bg);color: var(--knock); border: 1px solid rgba(26,95,214,.2); }
+.bg { background: rgba(100,115,150,.08); color: var(--muted); border: 1px solid var(--line2); }
 .mc-top-r { margin-left: auto; font-size: 10.5px; color: var(--muted); }
 
 .mc-body { padding: 12px 14px 10px; }
-.mc-teams { display: grid; grid-template-columns: 1fr 76px 1fr; align-items: center; gap: 4px; }
+.mc-teams { display: grid; grid-template-columns: 1fr 80px 1fr; align-items: center; gap: 4px; }
 .mct { text-align: center; }
-.mct .tf { font-size: 30px; line-height: 1; display: block; }
-.mct .tn { font-size: 12.5px; font-weight: 700; margin-top: 4px; line-height: 1.25; }
+.mct .tf { font-size: 32px; line-height: 1; display: block; }
+.mct .tn { font-size: 12.5px; font-weight: 700; margin-top: 4px; color: var(--txt); line-height: 1.25; }
 .mcmid { text-align: center; }
-.mcmid .sc { font-family: 'DM Mono', monospace; font-size: 24px; font-weight: 500; color: var(--gold); display: block; line-height: 1; }
-.mcmid .kt { font-family: 'DM Mono', monospace; font-size: 19px; color: var(--txt); display: block; line-height: 1; }
+.mcmid .sc { font-family: 'DM Mono', monospace; font-size: 26px; font-weight: 500; color: var(--gold); display: block; line-height: 1; }
+.mcmid .kt { font-family: 'DM Mono', monospace; font-size: 20px; color: var(--txt); display: block; line-height: 1; }
 .mcmid .ku { font-size: 9px; color: var(--muted); letter-spacing: 1.2px; display: block; margin-top: 2px; }
-.mcmid .vs { font-size: 14px; color: var(--dim); font-weight: 700; }
+.mcmid .vs { font-size: 15px; color: var(--dim); font-weight: 700; }
 
-.mc-foot { display: flex; align-items: center; padding: 8px 13px 10px; border-top: 1px solid var(--line); gap: 8px; }
+.mc-foot { display: flex; align-items: center; padding: 8px 13px 10px; border-top: 1px solid var(--line); gap: 8px; background: var(--card); }
 .mc-city { font-size: 11px; color: var(--muted); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mc-actions { display: flex; gap: 5px; flex: 0 0 auto; }
 .ibtn { width: 34px; height: 32px; border-radius: 8px; border: 1px solid var(--line2); background: var(--card2); color: var(--muted); display: grid; place-items: center; cursor: pointer; font-size: 14px; transition: .15s; }
-.ibtn.on { background: var(--gold); color: var(--bg); border-color: transparent; }
-.wbtn { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(56,201,251,.2); background: var(--knock-bg); color: var(--knock); cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; transition: .15s; }
-.wbtn:hover { background: var(--knock); color: var(--bg); }
+.ibtn.on { background: #fff3e0; color: var(--gold); border-color: rgba(184,92,0,.3); }
+.wbtn { height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid rgba(26,95,214,.25); background: var(--knock-bg); color: var(--knock); cursor: pointer; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: .5px; white-space: nowrap; transition: .15s; }
+.wbtn:hover { background: var(--knock); color: #fff; }
 
-/* ── FILTER BAR ──────────────────────────────── */
+/* ── FILTER BAR ───────────────────────────────── */
 .filterbar { display: flex; gap: 7px; align-items: center; margin: 10px 0 4px; flex-wrap: wrap; }
 .filterbar select { flex: 1; min-width: 130px; background: var(--card); color: var(--txt); border: 1px solid var(--line2); border-radius: 10px; padding: 9px 11px; font-family: inherit; font-size: 13px; }
-.chip { font-size: 11.5px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--muted); cursor: pointer; font-weight: 700; font-family: inherit; transition: .15s; }
-.chip.on-jp   { background: var(--jp-bg);   color: #ff8fa3; border-color: rgba(255,59,92,.4); }
-.chip.on-feat { background: var(--gold-bg); color: #fbbf24; border-color: rgba(245,166,35,.4); }
-.legend { display: flex; gap: 13px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin: 8px 2px 2px; }
-.legend i { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
+.chip { font-size: 11.5px; padding: 7px 13px; border-radius: 999px; border: 1px solid var(--line2); background: var(--card); color: var(--muted); cursor: pointer; font-weight: 700; font-family: inherit; transition: .15s; box-shadow: var(--shadow); }
+.chip.on-jp   { background: var(--jp-bg);   color: var(--jp);    border-color: rgba(204,31,54,.25); }
+.chip.on-feat { background: var(--feat-bg); color: var(--feat);  border-color: rgba(138,82,0,.25); }
+.legend { display: flex; gap: 13px; flex-wrap: wrap; font-size: 11px; color: var(--muted); margin: 8px 2px 4px; }
+.legend i { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
 
-/* ── STANDINGS ───────────────────────────────── */
-.grp-card { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; }
-.grp-head { display: flex; align-items: center; gap: 9px; padding: 11px 14px; border-bottom: 1px solid var(--line); }
-.grp-head h4 { margin: 0; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 600; }
-.glbl { background: var(--gold-bg); color: var(--gold); font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; font-family: 'DM Mono', monospace; border: 1px solid rgba(245,166,35,.3); }
+/* ── STANDINGS ────────────────────────────────── */
+.grp-card { background: var(--card); border-radius: var(--r); margin-bottom: 12px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+.grp-head { display: flex; align-items: center; gap: 9px; padding: 11px 14px; background: #1a2a4e; }
+.grp-head h4 { margin: 0; font-family: 'Fraunces', serif; font-size: 14px; font-weight: 700; color: #e8ecf8; }
+.glbl { background: rgba(245,200,66,.15); color: #f5c842; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 5px; font-family: 'DM Mono', monospace; border: 1px solid rgba(245,200,66,.3); }
 table { width: 100%; border-collapse: collapse; }
-th { font-size: 9px; color: var(--muted); font-weight: 700; text-align: center; padding: 7px 4px; letter-spacing: .7px; text-transform: uppercase; }
+th { font-size: 9px; color: var(--muted); font-weight: 700; text-align: center; padding: 8px 4px; letter-spacing: .7px; text-transform: uppercase; background: var(--card2); border-bottom: 1px solid var(--line2); }
 th:first-child, td:first-child { text-align: left; padding-left: 14px; }
 th:last-child,  td:last-child  { padding-right: 14px; }
-td { padding: 10px 4px; text-align: center; border-top: 1px solid var(--line); font-size: 12.5px; }
+td { padding: 10px 4px; text-align: center; border-top: 1px solid var(--line); font-size: 13px; color: var(--txt); }
 td.tm { font-weight: 600; }
 td.tm .fl { margin-right: 5px; }
-tr.jp-row td { color: #ff8fa3; }
-tr.qual td:first-child { box-shadow: inset 3px 0 0 var(--safe); }
+tr.jp-row td { color: var(--jp); font-weight: 700; }
+tr.qual { background: rgba(10,124,82,.04); }
+tr.qual td:first-child { border-left: 3px solid var(--safe); }
 td.pts { font-family: 'DM Mono', monospace; font-weight: 700; color: var(--gold); font-size: 14px; }
 
-/* ── SETTINGS ────────────────────────────────── */
-.scard { background: var(--card); border: 1px solid var(--line); border-radius: var(--r); margin-top: 14px; overflow: hidden; }
-.scard h3 { margin: 0; font-family: 'Fraunces', serif; font-size: 15px; font-weight: 600; padding: 12px 15px; border-bottom: 1px solid var(--line); }
-.srow { display: flex; align-items: center; gap: 12px; padding: 12px 15px; border-bottom: 1px solid var(--line); }
+/* ── SETTINGS ─────────────────────────────────── */
+.scard { background: var(--card); border-radius: var(--r); margin-top: 14px; overflow: hidden; box-shadow: var(--shadow); border: 1px solid var(--line); }
+.scard h3 { margin: 0; font-family: 'Fraunces', serif; font-size: 15px; font-weight: 700; padding: 12px 15px; background: var(--card2); border-bottom: 1px solid var(--line2); color: var(--txt); }
+.srow { display: flex; align-items: center; gap: 12px; padding: 13px 15px; border-bottom: 1px solid var(--line); }
 .srow:last-child { border-bottom: none; }
-.slab { font-size: 13.5px; font-weight: 500; flex: 1; }
-.sdesc { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.toggle { width: 44px; height: 26px; border-radius: 999px; background: var(--card2); border: 1px solid var(--line2); position: relative; cursor: pointer; flex: 0 0 auto; transition: .2s; }
-.toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius: 50%; background: var(--muted); transition: .2s; }
-.toggle.on { background: var(--safe); border-color: transparent; }
-.toggle.on::after { left: 20px; background: #fff; }
-select.mini, input.mini { background: var(--card2); color: var(--txt); border: 1px solid var(--line2); border-radius: 8px; padding: 7px 9px; font-family: inherit; font-size: 12px; }
+.slab { font-size: 13.5px; font-weight: 600; flex: 1; color: var(--txt); }
+.sdesc { font-size: 11.5px; color: var(--muted); margin-top: 2px; font-weight: 400; }
+.toggle { width: 46px; height: 27px; border-radius: 999px; background: var(--dim); border: none; position: relative; cursor: pointer; flex: 0 0 auto; transition: .2s; }
+.toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 21px; height: 21px; border-radius: 50%; background: #fff; transition: .2s; box-shadow: 0 1px 3px rgba(0,0,0,.2); }
+.toggle.on { background: var(--safe); }
+.toggle.on::after { left: 22px; }
+select.mini, input.mini { background: var(--card2); color: var(--txt); border: 1px solid var(--line2); border-radius: 8px; padding: 8px 10px; font-family: inherit; font-size: 13px; }
 input.mini { width: 100%; }
 .scol { flex-direction: column; align-items: stretch; gap: 8px; }
 .scol .slab { font-size: 13px; }
-.sbtn { display: block; width: calc(100% - 30px); margin: 10px 15px; text-align: center; padding: 11px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 13.5px; }
-.sbtn-primary { background: var(--gold); color: var(--bg); }
-.sbtn-ghost { background: transparent; color: var(--txt); border: 1px solid var(--line2); }
-.snote { font-size: 11px; color: var(--muted); line-height: 1.7; padding: 10px 15px; }
-.snote code { font-family: 'DM Mono'; background: var(--card2); padding: 1px 5px; border-radius: 4px; color: var(--gold); font-size: 10.5px; }
-.sstep { background: var(--card2); border-radius: 10px; padding: 12px 14px; margin: 0 15px 12px; }
-.sstep p { margin: 0 0 6px; font-size: 12px; font-weight: 700; color: var(--txt); }
-.sstep ol { margin: 0; padding-left: 18px; font-size: 11.5px; color: var(--muted); line-height: 2; }
-.sstep a { color: var(--knock); }
+.sbtn { display: block; width: calc(100% - 30px); margin: 12px 15px; text-align: center; padding: 12px; border-radius: 10px; border: none; cursor: pointer; font-family: inherit; font-weight: 700; font-size: 14px; }
+.sbtn-primary { background: #1a2a4e; color: #f5c842; }
+.sbtn-ghost { background: var(--card2); color: var(--muted); border: 1px solid var(--line2); }
+.snote { font-size: 11.5px; color: var(--muted); line-height: 1.7; padding: 10px 15px; }
+.snote code { font-family: 'DM Mono'; background: var(--card2); padding: 1px 5px; border-radius: 4px; color: var(--gold); font-size: 11px; border: 1px solid var(--line2); }
+.sstep { background: var(--card2); border-radius: 10px; padding: 12px 14px; margin: 0 15px 10px; border: 1px solid var(--line); }
+.sstep p { margin: 0 0 6px; font-size: 12.5px; font-weight: 700; color: var(--txt); }
+.sstep ol { margin: 0; padding-left: 18px; font-size: 12px; color: var(--muted); line-height: 2.1; }
+.sstep a { color: var(--knock); font-weight: 600; }
+.status-pill { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+.pill-ok  { background: var(--safe-bg); color: var(--safe); border: 1px solid rgba(10,124,82,.2); }
+.pill-err { background: var(--live-bg); color: var(--live); border: 1px solid rgba(229,57,53,.2); }
+.pill-off { background: rgba(100,112,137,.08); color: var(--muted); border: 1px solid var(--line2); }
 
 /* ── BOTTOM NAV ──────────────────────────────── */
 .bnav {
   position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-  background: rgba(8,9,14,0.94);
-  backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+  background: rgba(255,255,255,.97);
+  backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
   border-top: 1px solid var(--line2);
   display: flex;
   padding-bottom: env(safe-area-inset-bottom);
+  box-shadow: 0 -2px 12px rgba(20,30,80,.07);
 }
 .nbtn {
   flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 3px; height: var(--nav-h); cursor: pointer; border: none; background: transparent;
   color: var(--muted); font-family: inherit; transition: color .15s;
 }
-.nbtn .ni { font-size: 21px; line-height: 1; transition: transform .2s; }
+.nbtn .ni { font-size: 20px; line-height: 1; transition: transform .2s; }
 .nbtn .nl { font-size: 10px; font-weight: 700; letter-spacing: .3px; }
-.nbtn.active { color: var(--gold); }
-.nbtn.active .ni { transform: scale(1.12) translateY(-1px); }
+.nbtn.active { color: #1a2a4e; }
+.nbtn.active .ni { transform: scale(1.1) translateY(-1px); }
 
-/* ── WATCH SHEET ─────────────────────────────── */
-.sheet-bg { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.6); display: none; align-items: flex-end; }
+/* ── WATCH SHEET ──────────────────────────────── */
+.sheet-bg { position: fixed; inset: 0; z-index: 60; background: rgba(0,0,0,.4); display: none; align-items: flex-end; }
 .sheet-bg.show { display: flex; }
-.sheet { background: var(--card); width: 100%; max-width: 540px; margin: 0 auto; border-radius: 20px 20px 0 0; padding: 16px 16px max(20px,env(safe-area-inset-bottom)); border: 1px solid var(--line2); border-bottom: none; }
+.sheet { background: var(--card); width: 100%; max-width: 540px; margin: 0 auto; border-radius: 20px 20px 0 0; padding: 16px 16px max(20px,env(safe-area-inset-bottom)); box-shadow: 0 -4px 24px rgba(20,30,80,.12); }
 .sheet-handle { width: 36px; height: 4px; border-radius: 2px; background: var(--line2); margin: 0 auto 14px; }
-.sheet h4 { margin: 0 0 3px; font-family: 'Fraunces', serif; font-weight: 600; font-size: 17px; }
+.sheet h4 { margin: 0 0 3px; font-family: 'Fraunces', serif; font-weight: 700; font-size: 17px; color: var(--txt); }
 .sheet .sm { font-size: 12px; color: var(--muted); margin-bottom: 14px; }
-.wlink { display: flex; align-items: center; gap: 12px; padding: 12px 13px; border-radius: 12px; background: var(--card2); border: 1px solid var(--line); margin-bottom: 8px; text-decoration: none; color: var(--txt); }
+.wlink { display: flex; align-items: center; gap: 12px; padding: 13px 14px; border-radius: 12px; background: var(--card2); border: 1px solid var(--line); margin-bottom: 8px; text-decoration: none; color: var(--txt); }
 .wlink .ic { width: 34px; height: 34px; border-radius: 9px; display: grid; place-items: center; font-weight: 700; font-size: 12px; flex: 0 0 auto; font-family: 'DM Mono'; }
-.wlink b { font-size: 13.5px; }
-.wlink small { display: block; font-size: 11px; color: var(--muted); }
-.wfree { margin-left: auto; background: var(--safe-bg); color: var(--safe); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(39,174,133,.3); white-space: nowrap; }
+.wlink b { font-size: 13.5px; font-weight: 700; }
+.wlink small { display: block; font-size: 11px; color: var(--muted); margin-top: 1px; }
+.wfree { margin-left: auto; background: var(--safe-bg); color: var(--safe); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 5px; border: 1px solid rgba(10,124,82,.2); white-space: nowrap; }
 
-/* ── MISC ────────────────────────────────────── */
+/* ── MISC ─────────────────────────────────────── */
 .empty { text-align: center; color: var(--muted); padding: 40px 10px; font-size: 13px; }
-.toast { position: fixed; left: 50%; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px); transform: translateX(-50%) translateY(80px); background: var(--card2); border: 1px solid var(--line2); color: var(--txt); padding: 10px 16px; border-radius: 11px; font-size: 13px; z-index: 80; transition: .3s; max-width: 88%; text-align: center; }
+.toast { position: fixed; left: 50%; bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px); transform: translateX(-50%) translateY(80px); background: #1a2a4e; color: #e8ecf8; padding: 10px 18px; border-radius: 11px; font-size: 13px; z-index: 80; transition: .3s; max-width: 88%; text-align: center; box-shadow: 0 4px 16px rgba(10,20,60,.2); }
 .toast.show { transform: translateX(-50%) translateY(0); }
-.sec-note { font-size: 11px; color: var(--muted); margin: 6px 2px 14px; line-height: 1.65; }
+.sec-note { font-size: 12px; color: var(--muted); margin: 8px 2px 14px; line-height: 1.65; }
 </style>
 </head>
 <body>
@@ -357,27 +366,11 @@ const STREAMS={
        {n:"TVer",d:"日テレ・フジ中継を無料配信",u:"https://tver.jp/",c:"#fff",bg:"#00abc1",free:true}],
   jp:[{n:"DAZN",d:"日本代表戦は無料ライブ配信",u:"https://www.dazn.com/ja-JP/home",c:"#fff",bg:"#111",free:true},
       {n:"NHK / NHKプラス",d:"グループ2試合を地上波・配信",u:"https://plus.nhk.jp/",c:"#fff",bg:"#0a58c2",free:true},
-      {n:"日本テレビ / TVer",d:"グループ1試合を地上波・無料配信",u:"https://tver.jp/",c:"#cc0000",bg:"#fff",free:true}]
-};
-
-/* football-data.org チーム名 → 日本語チーム名マッピング */
-const FD_MAP={
-  'Mexico':'メキシコ','South Africa':'南アフリカ','Korea Republic':'韓国','Czechia':'チェコ',
-  'Canada':'カナダ','Bosnia and Herzegovina':'ボスニア','United States':'アメリカ','Paraguay':'パラグアイ',
-  'Qatar':'カタール','Switzerland':'スイス','Brazil':'ブラジル','Morocco':'モロッコ',
-  'Haiti':'ハイチ','Scotland':'スコットランド','Germany':'ドイツ','Curaçao':'キュラソー',
-  'Netherlands':'オランダ','Japan':'日本',"Côte d'Ivoire":'コートジボワール','Ecuador':'エクアドル',
-  'Sweden':'スウェーデン','Tunisia':'チュニジア','Spain':'スペイン','Cape Verde':'カーボベルデ',
-  'Belgium':'ベルギー','Egypt':'エジプト','Saudi Arabia':'サウジアラビア','Uruguay':'ウルグアイ',
-  'Iran':'イラン','New Zealand':'ニュージーランド','France':'フランス','Senegal':'セネガル',
-  'Iraq':'イラク','Norway':'ノルウェー','Argentina':'アルゼンチン','Algeria':'アルジェリア',
-  'Austria':'オーストリア','Jordan':'ヨルダン','Portugal':'ポルトガル','DR Congo':'コンゴ民主',
-  'England':'イングランド','Croatia':'クロアチア','Ghana':'ガーナ','Panama':'パナマ',
-  'Uzbekistan':'ウズベキスタン','Colombia':'コロンビア','Australia':'オーストラリア','Turkey':'トルコ',
+      {n:"日本テレビ / TVer",d:"グループ1試合を地上波・無料配信",u:"https://tver.jp/",c:"#fff",bg:"#e60012",free:true}]
 };
 
 /* ===================== 状態 ===================== */
-const LS={notif:"wc26c_notif",opts:"wc26c_opts",fav:"wc26c_fav"};
+const LS={notif:"wc26d_notif",opts:"wc26d_opts",fav:"wc26d_fav"};
 let notifSet=new Set(JSON.parse(localStorage.getItem(LS.notif)||"[]"));
 let opts=Object.assign(
   {lead:30,enabled:false,jpAuto:true,featAuto:false,apiBase:"",fdKey:"",demo:false},
@@ -386,7 +379,11 @@ let opts=Object.assign(
 let favTeam=localStorage.getItem(LS.fav)||"";
 let onlyJP=false,onlyFeat=false,current="today";
 let RESULTS={};
-let liveOK=false,lastSync=null,timers={},swReg=null;
+let liveOK=false,keyMissing=false,lastSync=null,timers={},swReg=null;
+
+/* Netlify Functions の自動エンドポイント（デプロイ先が Netlify なら自動使用） */
+const NETLIFY_LIVE = location.protocol!=="file:" ? "/.netlify/functions/live" : "";
+
 const save=()=>{localStorage.setItem(LS.notif,JSON.stringify([...notifSet]));localStorage.setItem(LS.opts,JSON.stringify(opts));localStorage.setItem(LS.fav,favTeam);};
 const byId=id=>MATCHES.find(m=>m.id===id);
 
@@ -395,14 +392,15 @@ const now=()=>new Date();
 const dt=m=>new Date(m.iso);
 const WD=["日","月","火","水","木","金","土"];
 const dayKey=m=>{const d=dt(m);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();};
-const dLabel=d=>`${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]})`;
+const dLabel=d=>`${d.getMonth()+1}/${d.getDate()}(${WD[d.getDay()]})`;
+const dLabelFull=d=>`${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]})`;
 function fmtTime(m){if(m.tbd)return"未定";const d=dt(m);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 function res(m){return RESULTS[m.id]||null;}
 function status(m){const r=res(m);if(r&&r.status)return r.status;const s=dt(m).getTime(),t=now().getTime();if(t<s)return"NS";if(t<s+2.2*3600*1e3)return"LIVE";return"FT";}
 const grpLabel=g=>({R32:"ベスト32",R16:"ベスト16",QF:"準々決勝",SF:"準決勝","3位":"3位決定戦","決勝":"決勝"})[g]||("グループ "+g);
 function teamsList(){const s=new Set();MATCHES.forEach(m=>{if(!m.knock){s.add(m.h);s.add(m.a);}});return[...s].sort();}
 const flagOf={};MATCHES.forEach(m=>{if(!m.knock){flagOf[m.h]=m.fh;flagOf[m.a]=m.fa;}});
-function fmtLastSync(){if(!lastSync)return"";const h=String(lastSync.getHours()).padStart(2,"0"),mi=String(lastSync.getMinutes()).padStart(2,"0");return` ・ 最終取得 ${h}:${mi}`;}
+function fmtLastSync(){if(!lastSync)return"";return`最終取得: ${String(lastSync.getHours()).padStart(2,"0")}:${String(lastSync.getMinutes()).padStart(2,"0")}`;}
 
 /* ===================== 順位表計算 ===================== */
 function standings(){
@@ -425,52 +423,77 @@ function standings(){
 }
 
 /* ===================== ライブ連携 ===================== */
-async function syncFromFD(key){
-  try{
-    const r=await fetch("https://api.football-data.org/v4/competitions/2000/matches",{
-      headers:{"X-Auth-Token":key}
-    });
-    if(!r.ok)throw new Error("FD API "+r.status);
-    const data=await r.json();
-    const newR={};
-    for(const mt of (data.matches||[])){
-      const hJP=FD_MAP[mt.homeTeam?.name];
-      const aJP=FD_MAP[mt.awayTeam?.name];
-      if(!hJP||!aJP)continue;
-      const internal=MATCHES.find(m=>m.h===hJP&&m.a===aJP&&!m.knock);
-      if(!internal)continue;
-      const st=mt.status==="FINISHED"?"FT":(mt.status==="IN_PLAY"||mt.status==="PAUSED")?"LIVE":"NS";
-      newR[internal.id]={sh:mt.score?.fullTime?.home??null,sa:mt.score?.fullTime?.away??null,status:st,minute:mt.minute??null};
-    }
-    return newR;
-  }catch(e){console.warn("football-data.org:",e.message);return null;}
-}
-
 async function syncLive(){
-  if(opts.demo&&!opts.apiBase&&!opts.fdKey){
-    RESULTS={1:{sh:2,sa:1,status:"FT"},2:{sh:1,sa:1,status:"FT"},3:{sh:0,sa:0,status:"FT"},
-             4:{sh:3,sa:0,status:"FT"},9:{sh:1,sa:1,status:"LIVE",minute:67}};
-    liveOK=true;lastSync=now();updateLiveDot();return;
+  /* デモモード */
+  if(opts.demo&&!opts.fdKey&&!opts.apiBase){
+    RESULTS={1:{sh:2,sa:1,status:"FT"},2:{sh:0,sa:2,status:"FT"},
+             3:{sh:0,sa:0,status:"FT"},4:{sh:3,sa:1,status:"FT"},
+             5:{sh:1,sa:2,status:"FT"},6:{sh:2,sa:1,status:"FT"},
+             9:{sh:1,sa:2,status:"LIVE",minute:73}};
+    liveOK=true;keyMissing=false;lastSync=now();updateLiveDot();return;
   }
+  /* Netlify Function（デプロイ後自動で使用） */
+  if(NETLIFY_LIVE){
+    try{
+      const r=await fetch(NETLIFY_LIVE,{cache:"no-store"});
+      if(!r.ok)throw 0;
+      const data=await r.json();
+      keyMissing=!!data.keyMissing;
+      if(!keyMissing){RESULTS=data.results||{};liveOK=true;lastSync=now();updateLiveDot();return;}
+    }catch(e){}
+  }
+  /* 直接APIキー入力 */
   if(opts.fdKey){
-    const r=await syncFromFD(opts.fdKey);
-    if(r){RESULTS=r;liveOK=true;lastSync=now();updateLiveDot();return;}
+    try{
+      const r=await fetch("https://api.football-data.org/v4/competitions/2000/matches",{headers:{"X-Auth-Token":opts.fdKey}});
+      if(!r.ok)throw 0;
+      const data=await r.json();
+      const newR={};
+      const PAIR={
+        'メキシコ|南アフリカ':1,'韓国|チェコ':2,'カナダ|ボスニア':3,'アメリカ|パラグアイ':4,
+        'カタール|スイス':5,'ブラジル|モロッコ':6,'ハイチ|スコットランド':7,'ドイツ|キュラソー':8,
+        'オランダ|日本':9,'コートジボワール|エクアドル':10,'スウェーデン|チュニジア':11,'スペイン|カーボベルデ':12,
+        'ベルギー|エジプト':13,'サウジアラビア|ウルグアイ':14,'イラン|ニュージーランド':15,'フランス|セネガル':16,
+        'イラク|ノルウェー':17,'アルゼンチン|アルジェリア':18,'オーストリア|ヨルダン':19,'ポルトガル|コンゴ民主':20,
+        'イングランド|クロアチア':21,'ガーナ|パナマ':22,'ウズベキスタン|コロンビア':23,'チェコ|南アフリカ':24,
+        'スイス|ボスニア':25,'カナダ|カタール':26,'メキシコ|韓国':27,'アメリカ|オーストラリア':28,
+        'スコットランド|モロッコ':29,'ブラジル|ハイチ':30,'トルコ|パラグアイ':31,'オランダ|スウェーデン':32,
+        'ドイツ|コートジボワール':33,'エクアドル|キュラソー':34,'チュニジア|日本':35,'スペイン|サウジアラビア':36,
+        'ベルギー|イラン':37,'ウルグアイ|カーボベルデ':38,'アルゼンチン|オーストリア':39,'フランス|イラク':40,
+        'ノルウェー|セネガル':41,'ヨルダン|アルジェリア':42,'ポルトガル|ウズベキスタン':43,'コロンビア|コンゴ民主':44,
+        '日本|スウェーデン':45,'チュニジア|オランダ':46,'ノルウェー|フランス':47,'セネガル|イラク':48,
+        'カーボベルデ|サウジアラビア':49,'ウルグアイ|スペイン':50,'コロンビア|ポルトガル':51,
+        'アルジェリア|オーストリア':52,'ヨルダン|アルゼンチン':53,
+      };
+      const JP2={'Mexico':'メキシコ','South Africa':'南アフリカ','Korea Republic':'韓国','Czechia':'チェコ','Canada':'カナダ','Bosnia and Herzegovina':'ボスニア','United States':'アメリカ','Paraguay':'パラグアイ','Qatar':'カタール','Switzerland':'スイス','Brazil':'ブラジル','Morocco':'モロッコ','Haiti':'ハイチ','Scotland':'スコットランド','Germany':'ドイツ','Curaçao':'キュラソー','Netherlands':'オランダ','Japan':'日本',"Côte d'Ivoire":'コートジボワール','Ecuador':'エクアドル','Sweden':'スウェーデン','Tunisia':'チュニジア','Spain':'スペイン','Cape Verde':'カーボベルデ','Belgium':'ベルギー','Egypt':'エジプト','Saudi Arabia':'サウジアラビア','Uruguay':'ウルグアイ','Iran':'イラン','New Zealand':'ニュージーランド','France':'フランス','Senegal':'セネガル','Iraq':'イラク','Norway':'ノルウェー','Argentina':'アルゼンチン','Algeria':'アルジェリア','Austria':'オーストリア','Jordan':'ヨルダン','Portugal':'ポルトガル','DR Congo':'コンゴ民主','England':'イングランド','Croatia':'クロアチア','Ghana':'ガーナ','Panama':'パナマ','Uzbekistan':'ウズベキスタン','Colombia':'コロンビア','Australia':'オーストラリア','Turkey':'トルコ'};
+      for(const mt of(data.matches||[])){
+        const h=JP2[mt.homeTeam?.name],a=JP2[mt.awayTeam?.name];if(!h||!a)continue;
+        const id=PAIR[`${h}|${a}`];if(!id)continue;
+        const st=mt.status==="FINISHED"?"FT":(mt.status==="IN_PLAY"||mt.status==="PAUSED")?"LIVE":"NS";
+        newR[id]={sh:mt.score?.fullTime?.home??null,sa:mt.score?.fullTime?.away??null,status:st,minute:mt.minute??null};
+      }
+      RESULTS=newR;liveOK=true;keyMissing=false;lastSync=now();updateLiveDot();return;
+    }catch(e){liveOK=false;}
   }
-  if(!opts.apiBase){liveOK=false;RESULTS={};updateLiveDot();return;}
-  try{
-    const r=await fetch(opts.apiBase.replace(/\/$/,"")+"/live",{cache:"no-store"});
-    if(!r.ok)throw 0;
-    const data=await r.json();
-    RESULTS=data.results||{};
-    liveOK=true;lastSync=now();
-  }catch(e){liveOK=false;}
+  /* カスタムプロキシ */
+  if(opts.apiBase){
+    try{
+      const r=await fetch(opts.apiBase.replace(/\/$/,"")+"/live",{cache:"no-store"});
+      if(!r.ok)throw 0;
+      const data=await r.json();
+      RESULTS=data.results||{};liveOK=true;keyMissing=false;lastSync=now();
+    }catch(e){liveOK=false;}
+  } else {
+    liveOK=false;RESULTS={};
+  }
   updateLiveDot();
 }
 
 function updateLiveDot(){
   const dot=document.getElementById("liveDot"),txt=document.getElementById("liveTxt");
-  if(liveOK){dot.classList.add("on");txt.textContent=opts.demo&&!opts.apiBase&&!opts.fdKey?"デモ":"ライブ同期中";}
-  else{dot.classList.remove("on");txt.textContent=(opts.apiBase||opts.fdKey)?"接続待ち":"日程表示";}
+  if(opts.demo&&!opts.fdKey&&!opts.apiBase){dot.classList.add("on");txt.textContent="デモ表示";return;}
+  if(liveOK){dot.classList.add("on");txt.textContent="ライブ同期中";}
+  else{dot.classList.remove("on");txt.textContent=keyMissing?"APIキー未設定":"日程表示";}
 }
 
 /* ===================== 描画 ===================== */
@@ -491,7 +514,6 @@ function render(){
   }
   if(onlyJP)list=list.filter(m=>m.jp);
   if(onlyFeat)list=list.filter(m=>m.feat||m.jp);
-
   let html="";
   if(current==="all"){
     html+=`<div class="filterbar">
@@ -502,7 +524,7 @@ function render(){
     <div class="legend">
       <span><i style="background:var(--jp)"></i>日本代表</span>
       <span><i style="background:var(--gold)"></i>注目試合</span>
-      <span><i style="background:var(--knock)"></i>決勝トーナメント</span>
+      <span><i style="background:var(--knock)"></i>決勝T</span>
     </div>`;
   }
   if(!list.length){view.innerHTML=html+`<div class="empty">該当する試合がありません</div>`;return bind();}
@@ -511,8 +533,8 @@ function render(){
     if(current==="all"&&favTeam&&!(m.h===favTeam||m.a===favTeam)&&!onlyJP&&!onlyFeat)return;
     const dk=dayKey(m),d=dt(m);
     if(dk!==last){
-      const td=d.toDateString()===now().toDateString();
-      html+=`<div class="day-hd"><b>${dLabel(d)}</b>${td?'<span class="today-chip">TODAY</span>':''}</div>`;
+      const isToday=d.toDateString()===now().toDateString();
+      html+=`<div class="day-hd"><b>${dLabelFull(d)}</b>${isToday?'<span class="today-chip">TODAY</span>':''}</div>`;
       last=dk;
     }
     html+=card(m);
@@ -530,56 +552,43 @@ function card(m){
   else if(m.knock)cls.push("knock");
   else if(m.feat)cls.push("feat");
   if(st==="FT")cls.push("done");
-
-  /* badges */
   const badges=[];
   if(st==="LIVE")badges.push(`<span class="badge bl">● LIVE${r&&r.minute?` ${r.minute}'`:""}</span>`);
   if(m.jp)badges.push(`<span class="badge bj">🇯🇵 日本</span>`);
   else if(m.feat)badges.push(`<span class="badge bf">★ 注目</span>`);
   if(m.knock)badges.push(`<span class="badge bk">${grpLabel(m.grp)}</span>`);
   else badges.push(`<span class="badge bg">グループ${m.grp}</span>`);
-
-  /* score / time in center */
   let midHTML;
   if(r&&r.sh!=null&&(st==="LIVE"||st==="FT")){
-    midHTML=`<span class="sc">${r.sh}&thinsp;–&thinsp;${r.sa}</span>`;
+    midHTML=`<span class="sc">${r.sh} – ${r.sa}</span>`;
   } else if(m.tbd){
     midHTML=`<span class="vs">未定</span>`;
   } else {
     midHTML=`<span class="kt">${fmtTime(m)}</span><span class="ku">JST</span>`;
   }
-
-  const rightBadge=st==="FT"?`<span style="font-size:10px">終了</span>`:
-                   st==="LIVE"?"":
-                   `<span style="font-size:10px">${dLabel(dt(m))}</span>`;
-
+  const topRight=st==="FT"?`<span style="font-size:10.5px;color:var(--muted)">終了</span>`:
+                 st==="LIVE"?"":
+                 `<span style="font-size:10.5px;color:var(--muted)">${dLabel(dt(m))}</span>`;
   return `<div class="${cls.join(" ")}">
-  <div class="mc-bar"></div>
-  <div class="mc-top">${badges.join(" ")}<span class="mc-top-r">${rightBadge}</span></div>
+  <div class="mc-top">${badges.join(" ")}<span class="mc-top-r">${topRight}</span></div>
   <div class="mc-body">
     <div class="mc-teams">
-      <div class="mct">
-        <span class="tf">${m.fh}</span>
-        <div class="tn">${m.h}</div>
-      </div>
+      <div class="mct"><span class="tf">${m.fh}</span><div class="tn">${m.h}</div></div>
       <div class="mcmid">${midHTML}</div>
-      <div class="mct">
-        <span class="tf">${m.fa}</span>
-        <div class="tn">${m.a}</div>
-      </div>
+      <div class="mct"><span class="tf">${m.fa}</span><div class="tn">${m.a}</div></div>
     </div>
   </div>
   <div class="mc-foot">
     <span class="mc-city">📍 ${m.city}</span>
     <div class="mc-actions">
-      <button class="ibtn ${on?'on':''}" onclick="toggleNotif(${m.id})" title="通知">${on?"🔔":"🔕"}</button>
+      <button class="ibtn ${on?"on":""}" onclick="toggleNotif(${m.id})">${on?"🔔":"🔕"}</button>
       <button class="wbtn" onclick="openWatch(${m.id})">▶ 視聴</button>
     </div>
   </div>
 </div>`;
 }
 
-/* ── ヒーロー ─────────────────────────────── */
+/* ── ヒーロー ─────────────────────────────────── */
 let cdTimer=null;
 function renderHero(){
   const t=now();
@@ -590,8 +599,8 @@ function renderHero(){
   if(!m){heroSlot.innerHTML="";return;}
   const live=!!(liveM&&m===liveM),r=res(m);
   const hcls="hero"+(m.jp?" jp":"")+(live?" liveh":"");
-  let scoreHTML=live&&r&&r.sh!=null
-    ?`<span class="hsc">${r.sh}&thinsp;–&thinsp;${r.sa}</span>`
+  const scoreHTML=live&&r&&r.sh!=null
+    ?`<span class="hsc">${r.sh} – ${r.sa}</span>`
     :`<span class="hvs">VS</span>`;
   heroSlot.innerHTML=`<div class="${hcls}">
   <div class="hero-top">
@@ -605,8 +614,8 @@ function renderHero(){
       <div class="hteam"><span class="hfl">${m.fa}</span><div class="hnm">${m.a}</div></div>
     </div>
   </div>
-  <div class="hero-foot">📍 ${m.city}　${dLabel(dt(m))} ${live?"進行中":fmtTime(m)+" キックオフ"}
-  ${live?"":"<div class=\"cd-row\" id=\"cd\"></div>"}
+  <div class="hero-foot">📍 ${m.city}　${dLabelFull(dt(m))} ${live?"進行中":fmtTime(m)+" キックオフ"}
+    ${live?"":`<div class="cd-row" id="cd"></div>`}
   </div>
 </div>`;
   if(!live)tickCountdown(m);
@@ -625,14 +634,28 @@ function tickCountdown(m){
   };upd();cdTimer=setInterval(upd,1000);
 }
 
-/* ── 順位表 ──────────────────────────────────── */
+/* ── 順位表 ────────────────────────────────────── */
 function renderTable(){
   const S=standings();
-  const hasResult=Object.keys(RESULTS).length>0;
-  let html=`<div class="sec-note">突破圏（上位2チーム）は緑の左線で表示。${!hasResult?"<br>ライブデータを設定すると、試合終了後に自動で反映されます（設定タブ）。":""}</div>`;
+  const hasResult=Object.values(RESULTS).some(r=>r.status==="FT");
+  let html="";
+  if(!hasResult){
+    html+=`<div style="background:var(--card);border-radius:var(--r);padding:16px;margin:14px 0;border:1px solid var(--line);box-shadow:var(--shadow)">
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--txt)">📡 ライブデータ未接続</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:1.8">
+        試合結果を自動反映するには、設定タブでAPIキーを入力してください。<br>
+        <b style="color:var(--knock)">football-data.org</b> で無料登録（2分）→ APIキーをコピー → 設定タブに貼り付け
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px">
+        <button onclick="document.querySelector('[data-tab=set]').click()" style="flex:1;padding:10px;border-radius:9px;border:none;background:#1a2a4e;color:#f5c842;font-weight:700;font-size:13px;cursor:pointer">⚙️ 設定を開く</button>
+        <button onclick="opts.demo=true;save();syncLive().then(()=>{render();toast('デモ表示をONにしました')})" style="flex:1;padding:10px;border-radius:9px;border:1px solid var(--line2);background:var(--card2);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer">デモ表示</button>
+      </div>
+    </div>`;
+  }
+  html+=`<div class="sec-note">上位2チーム（緑の左線）が決勝トーナメント進出圏。日本は赤字で表示。</div>`;
   Object.keys(S).forEach(g=>{
     html+=`<div class="grp-card">
-      <div class="grp-head"><span class="glbl">GROUP ${g}</span><h4>${["A","B","C","D","E","F","G","H","I","J","K","L"].includes(g)?"グループ "+g:grpLabel(g)}</h4></div>
+      <div class="grp-head"><span class="glbl">GROUP ${g}</span><h4>グループ ${g}</h4></div>
       <table><thead><tr><th>チーム</th><th>試</th><th>勝</th><th>分</th><th>負</th><th>GD</th><th>勝点</th></tr></thead><tbody>`;
     S[g].forEach((x,i)=>{
       const qual=i<2,jp=x.t==="日本";
@@ -646,11 +669,16 @@ function renderTable(){
   view.innerHTML=html;
 }
 
-/* ── 設定 ────────────────────────────────────── */
+/* ── 設定 ──────────────────────────────────────── */
 function renderSettings(){
   const jpN=MATCHES.filter(m=>m.jp).length;
   const trig=("Notification"in window)&&("showTrigger"in (window.Notification?.prototype||{}));
-  const swState=swReg?"登録済み":(location.protocol==="file:"?"未登録（file://のため）":"未登録");
+  const swState=swReg?"登録済み":(location.protocol==="file:"?"未登録（file://）":"未登録");
+  const statusPill=liveOK
+    ?`<span class="status-pill pill-ok">✓ 同期中 ${fmtLastSync()}</span>`
+    :keyMissing
+    ?`<span class="status-pill pill-err">⚠ APIキー未設定</span>`
+    :`<span class="status-pill pill-off">○ 未接続</span>`;
   view.innerHTML=`
 <div class="scard">
   <h3>🔔 通知設定</h3>
@@ -670,51 +698,61 @@ function renderSettings(){
     <div><div class="slab">★ 注目試合を自動ON</div><div class="sdesc">強豪対決・開幕・決勝など</div></div>
     <div class="toggle ${opts.featAuto?"on":""}" id="tgFt"></div>
   </div>
-  <button class="sbtn sbtn-primary" id="testN">通知をテスト送信</button>
-  <div class="snote">登録中 <b style="color:var(--txt)">${notifSet.size}</b> 件　SW: <b style="color:var(--txt)">${swState}</b>　予約通知: <b style="color:var(--txt)">${trig?"OS予約（閉じても発火）":"起動中タイマー"}</b></div>
+  <button class="sbtn sbtn-ghost" id="testN">通知をテスト送信</button>
+  <div class="snote">登録中 <b>${notifSet.size}</b> 件　SW: ${swState}　予約通知: ${trig?"OS予約（閉じても発火）":"起動中タイマー"}</div>
 </div>
 
 <div class="scard">
-  <h3>📡 ライブスコア連携</h3>
+  <h3>📡 リアルタイム結果連携</h3>
+  <div style="padding:12px 15px 0">${statusPill}</div>
+
   <div class="srow">
-    <div><div class="slab">デモ表示</div><div class="sdesc">開幕前でも順位表・ライブUIを体験</div></div>
+    <div><div class="slab">デモ表示モード</div><div class="sdesc">APIなしで結果・順位表のUIを確認</div></div>
     <div class="toggle ${opts.demo?"on":""}" id="tgDemo"></div>
   </div>
 
   <div class="srow scol">
-    <div class="slab">🏆 football-data.org APIキー（推奨）</div>
-    <input class="mini" id="fdKey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="${opts.fdKey||""}">
-    <div class="sdesc">無料登録でAPIキー取得 → リアルタイム結果・スコアが自動反映</div>
+    <div class="slab">🔑 APIキー（football-data.org）</div>
+    <input class="mini" id="fdKey" placeholder="例: abcdef1234567890abcdef1234567890" value="${opts.fdKey||""}">
+    <div class="sdesc">無料登録でキー取得。Netlifyにデプロイ済みの場合は環境変数が推奨。</div>
   </div>
   <div class="sstep">
-    <p>APIキーの取得手順（無料・2分）</p>
+    <p>📋 無料APIキー取得手順（2分）</p>
     <ol>
-      <li><a href="https://www.football-data.org/client/register" target="_blank">football-data.org</a> で無料登録</li>
-      <li>メール認証後、ダッシュボードでAPIキーをコピー</li>
+      <li><a href="https://www.football-data.org/client/register" target="_blank" rel="noopener">football-data.org</a> で無料登録</li>
+      <li>確認メールのリンクをクリック</li>
+      <li>ダッシュボードで <code>API Token</code> をコピー</li>
       <li>上の入力欄に貼り付けて「保存・同期」をクリック</li>
     </ol>
   </div>
 
-  <div class="srow scol">
-    <div class="slab">🔧 独自プロキシURL（上級者向け）</div>
-    <input class="mini" id="apiBase" placeholder="https://your-worker.example.com" value="${opts.apiBase||""}">
-    <div class="sdesc">Cloudflare Worker等で自前プロキシを立てる場合。<code>/live</code> から <code>{results:{id:{sh,sa,status,minute}}}</code> を返すこと。</div>
+  <div class="srow scol" style="border-top:1px solid var(--line)">
+    <div class="slab">🔧 Netlify 環境変数（推奨）</div>
+    <div class="sdesc">Netlifyダッシュボード → Site settings → Environment variables → <code>FOOTBALL_DATA_KEY</code> にAPIキーを設定すると、キーが公開されず安全に自動同期されます。</div>
+  </div>
+
+  <div class="srow scol" style="border-top:1px solid var(--line)">
+    <div class="slab">🔧 独自プロキシURL</div>
+    <input class="mini" id="apiBase" placeholder="https://your-proxy.example.com" value="${opts.apiBase||""}">
   </div>
   <button class="sbtn sbtn-primary" id="saveApi">保存して同期</button>
-  <div class="snote">状態: <b style="color:var(--txt)">${liveOK?"✅ 同期中":"⬜ 未接続"}</b>${fmtLastSync()}</div>
 </div>
 
 <div class="scard">
   <h3>⚽ お気に入りチーム</h3>
   <div class="srow">
     <div><div class="slab">応援チーム</div><div class="sdesc">日程タブの絞り込みに使用</div></div>
-    <select class="mini" id="fav" style="max-width:150px"><option value="">未設定</option>${teamsList().map(t=>`<option ${t===favTeam?"selected":""}>${t}</option>`).join("")}</select>
+    <select class="mini" id="fav" style="max-width:160px"><option value="">未設定</option>${teamsList().map(t=>`<option ${t===favTeam?"selected":""}>${t}</option>`).join("")}</select>
   </div>
 </div>
 
 <div class="scard">
-  <h3>📲 ホーム画面に追加</h3>
-  <div class="snote" style="padding-top:12px"><b>iPhone (Safari):</b> 共有ボタン →「ホーム画面に追加」<br><b>Android (Chrome):</b> メニュー(⋮)→「アプリをインストール」<br>※ HTTPS公開後に有効。通知もHTTPS必須です。</div>
+  <h3>📲 スマホにインストール</h3>
+  <div class="snote" style="padding-top:12px">
+    <b>iPhone (Safari):</b> 共有ボタン →「ホーム画面に追加」<br>
+    <b>Android (Chrome):</b> メニュー(⋮)→「アプリをインストール」<br>
+    <span style="color:var(--knock)">※ HTTPS公開後（Netlifyデプロイ後）に有効になります。</span>
+  </div>
 </div>`;
   bindSettings();
 }
@@ -723,7 +761,7 @@ function renderSettings(){
 async function ensurePerm(){
   if(!("Notification"in window)){toast("この端末は通知に未対応です");return false;}
   if(Notification.permission==="granted")return true;
-  if(Notification.permission==="denied"){toast("通知がブロックされています。端末設定で許可してください");return false;}
+  if(Notification.permission==="denied"){toast("通知がブロックされています");return false;}
   return(await Notification.requestPermission())==="granted";
 }
 async function clearScheduled(){
@@ -731,8 +769,7 @@ async function clearScheduled(){
   if(swReg){try{const ns=await swReg.getNotifications({includeTriggered:true});ns.forEach(n=>{if(n.tag&&n.tag.startsWith("wc26-"))n.close();});}catch(_){}}
 }
 async function scheduleAll(){
-  await clearScheduled();
-  if(!opts.enabled)return;
+  await clearScheduled();if(!opts.enabled)return;
   const trig=swReg&&("showTrigger"in Notification.prototype);
   const lead=opts.lead*6e4;
   for(const id of notifSet){
@@ -747,7 +784,7 @@ async function scheduleAll(){
 async function toggleNotif(id){
   const m=byId(id);
   if(notifSet.has(id)){notifSet.delete(id);toast("通知をオフにしました");}
-  else{if(!(await ensurePerm()))return;notifSet.add(id);opts.enabled=true;toast(`🔔 ${m.h} 戦の通知をオン`);}
+  else{if(!(await ensurePerm()))return;notifSet.add(id);opts.enabled=true;toast(`🔔 ${m.h} 戦の通知をON`);}
   save();await scheduleAll();render();
 }
 function applyAuto(){
@@ -761,7 +798,7 @@ const sheetEl=document.getElementById("watchSheet");
 function openWatch(id){
   const m=byId(id);
   document.getElementById("wsTitle").textContent=`${m.h} vs ${m.a}`;
-  document.getElementById("wsSub").textContent=`${dLabel(dt(m))} ${fmtTime(m)} JST ・ 📍${m.city}`;
+  document.getElementById("wsSub").textContent=`${dLabelFull(dt(m))} ${fmtTime(m)} JST ・ 📍${m.city}`;
   const links=m.jp?STREAMS.jp:STREAMS.all;
   document.getElementById("wsLinks").innerHTML=links.map(s=>`<a class="wlink" href="${s.u}" target="_blank" rel="noopener">
     <div class="ic" style="background:${s.bg};color:${s.c}">${s.n.slice(0,2)}</div>
@@ -779,22 +816,20 @@ function bind(){
 }
 function bindSettings(){
   document.getElementById("tgEn").onclick=async()=>{if(!opts.enabled&&!(await ensurePerm()))return;opts.enabled=!opts.enabled;save();await scheduleAll();renderSettings();toast(opts.enabled?"通知を有効化":"通知を無効化");};
-  document.getElementById("lead").onchange=e=>{opts.lead=+e.target.value;save();scheduleAll();toast("タイミングを更新");};
+  document.getElementById("lead").onchange=e=>{opts.lead=+e.target.value;save();scheduleAll();};
   document.getElementById("tgJP").onclick=()=>{opts.jpAuto=!opts.jpAuto;if(opts.jpAuto)applyAuto();save();scheduleAll();renderSettings();};
   document.getElementById("tgFt").onclick=()=>{opts.featAuto=!opts.featAuto;if(opts.featAuto)applyAuto();save();scheduleAll();renderSettings();};
   document.getElementById("tgDemo").onclick=async()=>{opts.demo=!opts.demo;save();await syncLive();renderSettings();render();};
-  document.getElementById("fdKey").onchange=e=>{opts.fdKey=e.target.value.trim();save();};
-  document.getElementById("apiBase").onchange=e=>{opts.apiBase=e.target.value.trim();save();};
   document.getElementById("saveApi").onclick=async()=>{
     opts.fdKey=document.getElementById("fdKey").value.trim();
     opts.apiBase=document.getElementById("apiBase").value.trim();
     save();await syncLive();renderSettings();render();
-    toast(liveOK?"✅ 同期しました":"❌ 接続できませんでした");
+    toast(liveOK?"✅ 同期しました":keyMissing?"⚠ Netlify環境変数にAPIキーを設定してください":"❌ 接続できませんでした");
   };
   document.getElementById("fav").onchange=e=>{favTeam=e.target.value;save();};
   document.getElementById("testN").onclick=async()=>{
     if(!(await ensurePerm()))return;
-    if(swReg)swReg.showNotification("⚽ World Cup 2026",{body:"テスト通知です。試合前にこのお知らせが届きます。",icon:"./icon.svg"});
+    if(swReg)swReg.showNotification("⚽ World Cup 2026",{body:"テスト通知です。",icon:"./icon.svg"});
     else new Notification("⚽ World Cup 2026",{body:"テスト通知です。"});
     toast("テスト通知を送信しました");
   };
@@ -804,15 +839,14 @@ function bindSettings(){
 document.querySelectorAll(".nbtn").forEach(b=>{
   b.onclick=()=>{
     document.querySelectorAll(".nbtn").forEach(x=>x.classList.remove("active"));
-    b.classList.add("active");
-    current=b.dataset.tab;onlyJP=onlyFeat=false;
+    b.classList.add("active");current=b.dataset.tab;onlyJP=onlyFeat=false;
     render();window.scrollTo({top:0,behavior:"smooth"});
   };
 });
 
 /* ===================== トースト ===================== */
 let tT=null;
-function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>t.classList.remove("show"),2600);}
+function toast(msg){const t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(tT);tT=setTimeout(()=>t.classList.remove("show"),2800);}
 
 /* ===================== 起動 ===================== */
 async function init(){
@@ -823,7 +857,7 @@ async function init(){
   await syncLive();
   if(opts.enabled&&("Notification"in window)&&Notification.permission==="granted")await scheduleAll();
   render();
-  setInterval(async()=>{if(liveOK||opts.apiBase||opts.fdKey||opts.demo)await syncLive();renderHero();if(current!=="set")render();},30000);
+  setInterval(async()=>{await syncLive();renderHero();if(current!=="set"&&current!=="table")render();if(current==="table"){renderHero();renderTable();}},30000);
 }
 init();
 </script>
