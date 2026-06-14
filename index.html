@@ -279,16 +279,16 @@ input.mini { width: 100%; }
 <main class="wrap" id="view"></main>
 
 <nav class="bnav">
-  <button class="nbtn active" data-tab="today"><span class="ni">🏠</span><span class="nl">今日</span></button>
-  <button class="nbtn" data-tab="all"><span class="ni">📅</span><span class="nl">日程</span></button>
-  <button class="nbtn" data-tab="table"><span class="ni">📊</span><span class="nl">順位</span></button>
-  <button class="nbtn" data-tab="set"><span class="ni">⚙️</span><span class="nl">設定</span></button>
+  <button class="nbtn active" data-tab="today"><span class="ni">🏠</span><span class="nl" id="nlToday">今日</span></button>
+  <button class="nbtn" data-tab="all"><span class="ni">📅</span><span class="nl" id="nlAll">日程</span></button>
+  <button class="nbtn" data-tab="table"><span class="ni">📊</span><span class="nl" id="nlTable">順位</span></button>
+  <button class="nbtn" data-tab="set"><span class="ni">⚙️</span><span class="nl" id="nlSet">設定</span></button>
 </nav>
 
 <div class="sheet-bg" id="watchSheet">
   <div class="sheet">
     <div class="sheet-handle"></div>
-    <h4 id="wsTitle">中継を見る</h4>
+    <h4 id="wsTitle"></h4>
     <div class="sm" id="wsSub"></div>
     <div class="lang-tabs">
       <button class="lang-tab" id="ltVN" onclick="setLangTab('vn')">🇻🇳 Việt Nam</button>
@@ -296,7 +296,7 @@ input.mini { width: 100%; }
       <button class="lang-tab" id="ltEN" onclick="setLangTab('en')">🇺🇸 English</button>
     </div>
     <div id="wsLinks"></div>
-    <button class="sbtn sbtn-ghost" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
+    <button class="sbtn sbtn-ghost" id="wsClose" onclick="closeWatch()" style="margin:8px 0 0">閉じる</button>
   </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -368,21 +368,21 @@ const MATCHES=[
   M(105,"2026-07-19T05:00:00+09:00","3位","3位決定戦","勝ち上がり","マイアミ",F.TBD,F.TBD,{knock:true,tbd:true}),
   M(106,"2026-07-20T04:00:00+09:00","決勝","決勝","WORLD CHAMPION","NY/NJ メットライフ",F.TBD,F.TBD,{knock:true,feat:true}),
 ];
-/* proxy prefix: CroxyProxy で geo-restriction を自動回避 */
-const _PX="https://www.croxyproxy.rocks/?url=";
 const STREAMS={
   vn:{
     free:"Miễn phí",
     all:[
-      {n:"VTVgo · VTV1",d:"Kênh chính WC · tự động qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
-      {n:"VTVgo · VTV3",d:"Thể thao & giải trí · qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv3-3.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"VTVgo VTV1",d:"WC trực tiếp · miễn phí · cần IP VN",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"VTVgo VTV3",d:"Thể thao & giải trí · cần IP VN",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv3-3.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"VTV Facebook",d:"Facebook Live · không cần VPN ✓",u:"https://www.facebook.com/VTV.vn/",c:"#fff",bg:"#1877f2",free:true},
       {n:"FPT Play",d:"Livestream HD · gói thuê bao FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
       {n:"K+",d:"Bình luận tiếng Việt · K+ trả phí",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
     ],
     jp:[
-      {n:"VTVgo · VTV1",d:"Trận Nhật Bản · tự động qua proxy",u:_PX+"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
-      {n:"FPT Play",d:"HD không giới hạn · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
-      {n:"K+",d:"Tiếng Việt · K+ Sports",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
+      {n:"VTVgo VTV1",d:"Trận Nhật Bản · cần IP Việt Nam",u:"https://vtvgo.vn/xem-tv-truc-tuyen-kenh-vtv1-1.html",c:"#fff",bg:"#c8102e",free:true},
+      {n:"VTV Facebook",d:"Facebook Live · không cần VPN ✓",u:"https://www.facebook.com/VTV.vn/",c:"#fff",bg:"#1877f2",free:true},
+      {n:"FPT Play",d:"HD · gói FPT",u:"https://fptplay.vn",c:"#fff",bg:"#f37021"},
+      {n:"K+",d:"Tiếng Việt · K+",u:"https://kplus.vn",c:"#fff",bg:"#003087"}
     ]
   },
   jp:{
@@ -416,6 +416,206 @@ const STREAMS={
   }
 };
 
+/* ===================== i18n ===================== */
+const TEAM={
+  "メキシコ":{vn:"Mexico",en:"Mexico"},
+  "南アフリカ":{vn:"Nam Phi",en:"South Africa"},
+  "韓国":{vn:"Hàn Quốc",en:"South Korea"},
+  "チェコ":{vn:"Séc",en:"Czech Republic"},
+  "カナダ":{vn:"Canada",en:"Canada"},
+  "ボスニア":{vn:"Bosnia & Herz.",en:"Bosnia & Herz."},
+  "アメリカ":{vn:"Mỹ",en:"USA"},
+  "パラグアイ":{vn:"Paraguay",en:"Paraguay"},
+  "カタール":{vn:"Qatar",en:"Qatar"},
+  "スイス":{vn:"Thụy Sĩ",en:"Switzerland"},
+  "ブラジル":{vn:"Brazil",en:"Brazil"},
+  "モロッコ":{vn:"Maroc",en:"Morocco"},
+  "ハイチ":{vn:"Haiti",en:"Haiti"},
+  "スコットランド":{vn:"Scotland",en:"Scotland"},
+  "ドイツ":{vn:"Đức",en:"Germany"},
+  "キュラソー":{vn:"Curaçao",en:"Curaçao"},
+  "オランダ":{vn:"Hà Lan",en:"Netherlands"},
+  "日本":{vn:"Nhật Bản",en:"Japan"},
+  "コートジボワール":{vn:"Bờ Biển Ngà",en:"Côte d'Ivoire"},
+  "エクアドル":{vn:"Ecuador",en:"Ecuador"},
+  "スウェーデン":{vn:"Thụy Điển",en:"Sweden"},
+  "チュニジア":{vn:"Tunisia",en:"Tunisia"},
+  "スペイン":{vn:"Tây Ban Nha",en:"Spain"},
+  "カーボベルデ":{vn:"Cape Verde",en:"Cape Verde"},
+  "ベルギー":{vn:"Bỉ",en:"Belgium"},
+  "エジプト":{vn:"Ai Cập",en:"Egypt"},
+  "サウジアラビア":{vn:"Ả Rập Xê Út",en:"Saudi Arabia"},
+  "ウルグアイ":{vn:"Uruguay",en:"Uruguay"},
+  "イラン":{vn:"Iran",en:"Iran"},
+  "ニュージーランド":{vn:"New Zealand",en:"New Zealand"},
+  "フランス":{vn:"Pháp",en:"France"},
+  "セネガル":{vn:"Senegal",en:"Senegal"},
+  "イラク":{vn:"Iraq",en:"Iraq"},
+  "ノルウェー":{vn:"Na Uy",en:"Norway"},
+  "アルゼンチン":{vn:"Argentina",en:"Argentina"},
+  "アルジェリア":{vn:"Algeria",en:"Algeria"},
+  "オーストリア":{vn:"Áo",en:"Austria"},
+  "ヨルダン":{vn:"Jordan",en:"Jordan"},
+  "ポルトガル":{vn:"Bồ Đào Nha",en:"Portugal"},
+  "コンゴ民主":{vn:"CHDC Congo",en:"DR Congo"},
+  "イングランド":{vn:"Anh",en:"England"},
+  "クロアチア":{vn:"Croatia",en:"Croatia"},
+  "ガーナ":{vn:"Ghana",en:"Ghana"},
+  "パナマ":{vn:"Panama",en:"Panama"},
+  "ウズベキスタン":{vn:"Uzbekistan",en:"Uzbekistan"},
+  "コロンビア":{vn:"Colombia",en:"Colombia"},
+  "オーストラリア":{vn:"Úc",en:"Australia"},
+  "トルコ":{vn:"Thổ Nhĩ Kỳ",en:"Turkey"},
+};
+const UI={
+  jp:{
+    navToday:"今日",navAll:"日程",navTable:"順位",navSet:"設定",
+    watch:"▶ 視聴",allTeams:"全チーム",filterJP:"🇯🇵 日本",filterFeat:"★ 注目",
+    legendJP:"日本代表",legendFeat:"注目試合",legendKnock:"決勝T",
+    jpBadge:"🇯🇵 日本",featBadge:"★ 注目",
+    live:"LIVE",ft:"終了",tbd:"未定",
+    grp:"グループ",r32:"ベスト32",r16:"ベスト16",qf:"準々決勝",sf:"準決勝",third:"3位決定戦",final:"決勝",
+    noMatch:"該当する試合がありません",
+    liveSync:"ライブ同期中",noKey:"APIキー未設定",offline:"日程表示",demoDisp:"デモ表示",
+    heroJPNext:"🇯🇵 次の日本戦",heroNext:"次の試合",heroLive:"進行中",heroKO:"キックオフ",
+    tableHdr:["チーム","試","勝","分","負","GD","勝点"],
+    tableNote:"上位2チーム（緑の左線）が決勝トーナメント進出圏。",
+    tableNoData:"📡 ライブデータ未接続",
+    tableNoDataDesc:"設定タブでAPIキーを入力すると試合結果を自動反映します。",
+    openSet:"⚙️ 設定を開く",demoBtn:"デモ表示",
+    setLangTitle:"🌐 言語 / Language",
+    setNotif:"🔔 通知設定",setEnable:"通知を有効にする",setEnableDesc:"キックオフ前に知らせる",
+    setTiming:"通知タイミング",
+    setJPAuto:"🇯🇵 日本代表戦を自動ON",setFeatAuto:"★ 注目試合を自動ON",
+    featDesc:"強豪対決・開幕・決勝など",
+    setTestNotif:"通知をテスト送信",
+    setLive:"📡 リアルタイム結果連携",setDemo:"デモ表示モード",setDemoDesc:"APIなしで結果・順位表のUIを確認",
+    apiKeyLabel:"🔑 APIキー（football-data.org）",
+    apiKeyDesc:"無料登録でキー取得。Netlifyの場合は環境変数が推奨。",
+    netlifyLabel:"🔧 Netlify 環境変数（推奨）",
+    netlifyDesc:"Site settings → Environment variables → FOOTBALL_DATA_KEY",
+    proxyLabel:"🔧 独自プロキシURL",
+    saveSync:"保存して同期",
+    setFav:"⚽ お気に入りチーム",favLabel:"応援チーム",favDesc:"日程タブの絞り込みに使用",favNone:"未設定",
+    setInstall:"📲 スマホにインストール",
+    installiOS:"iPhone (Safari): 共有ボタン →「ホーム画面に追加」",
+    installAndroid:"Android (Chrome): メニュー(⋮)→「アプリをインストール」",
+    installNote:"※ HTTPS公開後（Netlifyデプロイ後）に有効になります。",
+    pillOk:"✓ 同期中",pillErr:"⚠ APIキー未設定",pillOff:"○ 未接続",
+    swReg:"登録済み",swFile:"未登録（file://）",swNone:"未登録",
+    osTrig:"OS予約（閉じても発火）",timerTrig:"起動中タイマー",
+    notifCount:"登録中 {n} 件　SW: {sw}　予約通知: {trig}",
+    jpMatchCount:"全{n}試合を自動登録",
+    minBefore:"分前",hrBefore:"時間前",
+    watchTitle:"中継を見る",closeBtn:"閉じる",
+    toastOn:"通知を有効化",toastOff:"通知を無効化",
+    toastSynced:"✅ 同期しました",toastNoKey:"⚠ Netlify環境変数にAPIキーを設定してください",toastNoConn:"❌ 接続できませんでした",
+    toastNotifOn:"🔔 {team}戦の通知をON",toastNotifOff:"通知をオフにしました",
+    toastDemoOn:"デモ表示をONにしました",toastTest:"テスト通知を送信しました",
+    lastSync:"最終取得: {hh}:{mm}",apiStepTitle:"📋 無料APIキー取得手順（2分）",
+    apiStep:["football-data.org で無料登録","確認メールのリンクをクリック","ダッシュボードで API Token をコピー","上の入力欄に貼り付けて「保存・同期」をクリック"],
+    wd:["日","月","火","水","木","金","土"],
+  },
+  vn:{
+    navToday:"Hôm nay",navAll:"Lịch",navTable:"BXH",navSet:"Cài đặt",
+    watch:"▶ Xem",allTeams:"Tất cả",filterJP:"🇯🇵 Nhật Bản",filterFeat:"★ Nổi bật",
+    legendJP:"Nhật Bản",legendFeat:"Trận nổi bật",legendKnock:"Vòng loại trực tiếp",
+    jpBadge:"🇯🇵 Nhật Bản",featBadge:"★ Nổi bật",
+    live:"LIVE",ft:"KT",tbd:"TBD",
+    grp:"Bảng",r32:"Vòng 32",r16:"Vòng 16",qf:"Tứ kết",sf:"Bán kết",third:"Hạng 3",final:"Chung kết",
+    noMatch:"Không có trận đấu nào",
+    liveSync:"Đang đồng bộ LIVE",noKey:"Chưa có API key",offline:"Xem lịch",demoDisp:"Demo",
+    heroJPNext:"🇯🇵 Trận Nhật tiếp theo",heroNext:"Trận tiếp theo",heroLive:"Đang diễn ra",heroKO:"Kick-off",
+    tableHdr:["Đội","T","T","H","B","HS","Điểm"],
+    tableNote:"2 đội đứng đầu (viền xanh) vào vòng knock-out.",
+    tableNoData:"📡 Chưa kết nối dữ liệu live",
+    tableNoDataDesc:"Vui lòng nhập API key trong tab Cài đặt để xem kết quả.",
+    openSet:"⚙️ Mở cài đặt",demoBtn:"Chế độ Demo",
+    setLangTitle:"🌐 Ngôn ngữ / Language",
+    setNotif:"🔔 Thông báo",setEnable:"Bật thông báo",setEnableDesc:"Thông báo trước kick-off",
+    setTiming:"Thời gian thông báo",
+    setJPAuto:"🇯🇵 Tự động bật trận Nhật Bản",setFeatAuto:"★ Tự động bật trận nổi bật",
+    featDesc:"Trận lớn, khai mạc, chung kết",
+    setTestNotif:"Gửi thông báo thử",
+    setLive:"📡 Kết quả trực tiếp",setDemo:"Chế độ Demo",setDemoDesc:"Xem giao diện kết quả mà không cần API",
+    apiKeyLabel:"🔑 API Key (football-data.org)",
+    apiKeyDesc:"Đăng ký miễn phí để lấy key. Nên dùng biến môi trường Netlify.",
+    netlifyLabel:"🔧 Biến môi trường Netlify (khuyến nghị)",
+    netlifyDesc:"Site settings → Environment variables → FOOTBALL_DATA_KEY",
+    proxyLabel:"🔧 URL Proxy tùy chỉnh",
+    saveSync:"Lưu & Đồng bộ",
+    setFav:"⚽ Đội yêu thích",favLabel:"Đội yêu thích",favDesc:"Lọc lịch thi đấu",favNone:"Chưa chọn",
+    setInstall:"📲 Cài đặt lên điện thoại",
+    installiOS:"iPhone (Safari): Nút Chia sẻ → 'Thêm vào Màn hình chính'",
+    installAndroid:"Android (Chrome): Menu (⋮) → 'Cài đặt ứng dụng'",
+    installNote:"※ Chỉ hoạt động sau khi triển khai HTTPS (Netlify).",
+    pillOk:"✓ Đang đồng bộ",pillErr:"⚠ Chưa có API key",pillOff:"○ Chưa kết nối",
+    swReg:"Đã đăng ký",swFile:"Chưa đăng ký (file://)",swNone:"Chưa đăng ký",
+    osTrig:"Hẹn giờ OS (hoạt động khi tắt app)",timerTrig:"Timer đang chạy",
+    notifCount:"Đã đăng ký {n} trận　SW: {sw}　Thông báo: {trig}",
+    jpMatchCount:"Tự động đăng ký tất cả {n} trận",
+    minBefore:" phút",hrBefore:" giờ",
+    watchTitle:"Xem trực tiếp",closeBtn:"Đóng",
+    toastOn:"Đã bật thông báo",toastOff:"Đã tắt thông báo",
+    toastSynced:"✅ Đã đồng bộ",toastNoKey:"⚠ Vui lòng đặt FOOTBALL_DATA_KEY trong Netlify",toastNoConn:"❌ Không thể kết nối",
+    toastNotifOn:"🔔 Bật thông báo trận {team}",toastNotifOff:"Đã tắt thông báo",
+    toastDemoOn:"Đã bật chế độ Demo",toastTest:"Đã gửi thông báo thử",
+    lastSync:"Đồng bộ: {hh}:{mm}",apiStepTitle:"📋 Cách lấy API key miễn phí (2 phút)",
+    apiStep:["Đăng ký tại football-data.org","Nhấn link xác nhận trong email","Sao chép API Token trong dashboard","Dán vào ô trên và nhấn 'Lưu & Đồng bộ'"],
+    wd:["CN","T2","T3","T4","T5","T6","T7"],
+  },
+  en:{
+    navToday:"Today",navAll:"Schedule",navTable:"Standings",navSet:"Settings",
+    watch:"▶ Watch",allTeams:"All teams",filterJP:"🇯🇵 Japan",filterFeat:"★ Featured",
+    legendJP:"Japan",legendFeat:"Featured match",legendKnock:"Knockout",
+    jpBadge:"🇯🇵 Japan",featBadge:"★ Featured",
+    live:"LIVE",ft:"FT",tbd:"TBD",
+    grp:"Group",r32:"Round of 32",r16:"Round of 16",qf:"Quarter-final",sf:"Semi-final",third:"3rd Place",final:"Final",
+    noMatch:"No matches found",
+    liveSync:"Live sync active",noKey:"API key missing",offline:"Schedule only",demoDisp:"Demo",
+    heroJPNext:"🇯🇵 Next Japan match",heroNext:"Next match",heroLive:"In Progress",heroKO:"Kick-off",
+    tableHdr:["Team","P","W","D","L","GD","Pts"],
+    tableNote:"Top 2 teams (green border) advance to knockout stage.",
+    tableNoData:"📡 Live data not connected",
+    tableNoDataDesc:"Enter your API key in Settings to show live results.",
+    openSet:"⚙️ Open Settings",demoBtn:"Demo mode",
+    setLangTitle:"🌐 Language / 言語 / Ngôn ngữ",
+    setNotif:"🔔 Notifications",setEnable:"Enable notifications",setEnableDesc:"Alert before kick-off",
+    setTiming:"Alert timing",
+    setJPAuto:"🇯🇵 Auto-enable Japan matches",setFeatAuto:"★ Auto-enable featured matches",
+    featDesc:"Big clashes, opener, final",
+    setTestNotif:"Send test notification",
+    setLive:"📡 Live Results Sync",setDemo:"Demo mode",setDemoDesc:"Preview results UI without API",
+    apiKeyLabel:"🔑 API Key (football-data.org)",
+    apiKeyDesc:"Register free to get your key. Use Netlify env var for security.",
+    netlifyLabel:"🔧 Netlify environment variable (recommended)",
+    netlifyDesc:"Site settings → Environment variables → FOOTBALL_DATA_KEY",
+    proxyLabel:"🔧 Custom proxy URL",
+    saveSync:"Save & Sync",
+    setFav:"⚽ Favourite team",favLabel:"Your team",favDesc:"Filter schedule by team",favNone:"None",
+    setInstall:"📲 Install as App",
+    installiOS:"iPhone (Safari): Share button → 'Add to Home Screen'",
+    installAndroid:"Android (Chrome): Menu (⋮) → 'Install App'",
+    installNote:"※ Only works after HTTPS deployment (Netlify).",
+    pillOk:"✓ Synced",pillErr:"⚠ API key missing",pillOff:"○ Offline",
+    swReg:"Registered",swFile:"Not registered (file://)",swNone:"Not registered",
+    osTrig:"OS scheduled (fires when closed)",timerTrig:"Timer running",
+    notifCount:"{n} registered　SW: {sw}　Notif: {trig}",
+    jpMatchCount:"Auto-register all {n} Japan matches",
+    minBefore:" min before",hrBefore:" hr before",
+    watchTitle:"Watch Live",closeBtn:"Close",
+    toastOn:"Notifications enabled",toastOff:"Notifications disabled",
+    toastSynced:"✅ Synced",toastNoKey:"⚠ Set FOOTBALL_DATA_KEY in Netlify env vars",toastNoConn:"❌ Connection failed",
+    toastNotifOn:"🔔 Notification ON for {team}",toastNotifOff:"Notification off",
+    toastDemoOn:"Demo mode enabled",toastTest:"Test notification sent",
+    lastSync:"Last sync: {hh}:{mm}",apiStepTitle:"📋 Free API key (2 min)",
+    apiStep:["Register at football-data.org","Click confirmation link in email","Copy API Token from your dashboard","Paste above and click 'Save & Sync'"],
+    wd:["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+  }
+};
+function t(k){return(UI[langMode]||UI.jp)[k]||UI.jp[k]||k;}
+function tn(name){if(langMode==="jp")return name;return(TEAM[name]||{})[langMode]||name;}
+
 /* ===================== 状態 ===================== */
 const LS={notif:"wc26d_notif",opts:"wc26d_opts",fav:"wc26d_fav",lang:"wc26d_lang"};
 let langMode=localStorage.getItem(LS.lang)||"vn";
@@ -438,17 +638,27 @@ const byId=id=>MATCHES.find(m=>m.id===id);
 /* ===================== ユーティリティ ===================== */
 const now=()=>new Date();
 const dt=m=>new Date(m.iso);
-const WD=["日","月","火","水","木","金","土"];
 const dayKey=m=>{const d=dt(m);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();};
-const dLabel=d=>`${d.getMonth()+1}/${d.getDate()}(${WD[d.getDay()]})`;
-const dLabelFull=d=>`${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]})`;
-function fmtTime(m){if(m.tbd)return"未定";const d=dt(m);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
+const dLabel=d=>`${d.getMonth()+1}/${d.getDate()}(${t("wd")[d.getDay()]})`;
+const dLabelFull=d=>{
+  const u=UI[langMode]||UI.jp;
+  if(langMode==="jp")return`${d.getMonth()+1}月${d.getDate()}日(${u.wd[d.getDay()]})`;
+  return`${d.getDate()}/${d.getMonth()+1}(${u.wd[d.getDay()]})`;
+};
+function fmtTime(m){if(m.tbd)return t("tbd");const d=dt(m);return String(d.getHours()).padStart(2,"0")+":"+String(d.getMinutes()).padStart(2,"0");}
 function res(m){return RESULTS[m.id]||null;}
-function status(m){const r=res(m);if(r&&r.status)return r.status;const s=dt(m).getTime(),t=now().getTime();if(t<s)return"NS";if(t<s+2.2*3600*1e3)return"LIVE";return"FT";}
-const grpLabel=g=>({R32:"ベスト32",R16:"ベスト16",QF:"準々決勝",SF:"準決勝","3位":"3位決定戦","決勝":"決勝"})[g]||("グループ "+g);
+function status(m){const r=res(m);if(r&&r.status)return r.status;const s=dt(m).getTime(),n=now().getTime();if(n<s)return"NS";if(n<s+2.2*3600*1e3)return"LIVE";return"FT";}
+function grpLabel(g){
+  const map={R32:t("r32"),R16:t("r16"),QF:t("qf"),SF:t("sf"),"3位":t("third"),"決勝":t("final")};
+  return map[g]||(t("grp")+" "+g);
+}
 function teamsList(){const s=new Set();MATCHES.forEach(m=>{if(!m.knock){s.add(m.h);s.add(m.a);}});return[...s].sort();}
 const flagOf={};MATCHES.forEach(m=>{if(!m.knock){flagOf[m.h]=m.fh;flagOf[m.a]=m.fa;}});
-function fmtLastSync(){if(!lastSync)return"";return`最終取得: ${String(lastSync.getHours()).padStart(2,"0")}:${String(lastSync.getMinutes()).padStart(2,"0")}`;}
+function fmtLastSync(){
+  if(!lastSync)return"";
+  const hh=String(lastSync.getHours()).padStart(2,"0"),mm=String(lastSync.getMinutes()).padStart(2,"0");
+  return t("lastSync").replace("{hh}",hh).replace("{mm}",mm);
+}
 
 /* ===================== 順位表計算 ===================== */
 function standings(){
@@ -539,9 +749,9 @@ async function syncLive(){
 
 function updateLiveDot(){
   const dot=document.getElementById("liveDot"),txt=document.getElementById("liveTxt");
-  if(opts.demo&&!opts.fdKey&&!opts.apiBase){dot.classList.add("on");txt.textContent="デモ表示";return;}
-  if(liveOK){dot.classList.add("on");txt.textContent="ライブ同期中";}
-  else{dot.classList.remove("on");txt.textContent=keyMissing?"APIキー未設定":"日程表示";}
+  if(opts.demo&&!opts.fdKey&&!opts.apiBase){dot.classList.add("on");txt.textContent=t("demoDisp");return;}
+  if(liveOK){dot.classList.add("on");txt.textContent=t("liveSync");}
+  else{dot.classList.remove("on");txt.textContent=keyMissing?t("noKey"):t("offline");}
 }
 
 /* ===================== 描画 ===================== */
@@ -565,17 +775,17 @@ function render(){
   let html="";
   if(current==="all"){
     html+=`<div class="filterbar">
-      <select id="teamSel"><option value="">全チーム</option>${teamsList().map(t=>`<option ${t===favTeam?"selected":""}>${t}</option>`).join("")}</select>
-      <button class="chip ${onlyJP?'on-jp':''}" id="cJP">🇯🇵 日本</button>
-      <button class="chip ${onlyFeat?'on-feat':''}" id="cFeat">★ 注目</button>
+      <select id="teamSel"><option value="">${t("allTeams")}</option>${teamsList().map(tm=>`<option ${tm===favTeam?"selected":""}>${tm}</option>`).join("")}</select>
+      <button class="chip ${onlyJP?'on-jp':''}" id="cJP">${t("filterJP")}</button>
+      <button class="chip ${onlyFeat?'on-feat':''}" id="cFeat">${t("filterFeat")}</button>
     </div>
     <div class="legend">
-      <span><i style="background:var(--jp)"></i>日本代表</span>
-      <span><i style="background:var(--gold)"></i>注目試合</span>
-      <span><i style="background:var(--knock)"></i>決勝T</span>
+      <span><i style="background:var(--jp)"></i>${t("legendJP")}</span>
+      <span><i style="background:var(--gold)"></i>${t("legendFeat")}</span>
+      <span><i style="background:var(--knock)"></i>${t("legendKnock")}</span>
     </div>`;
   }
-  if(!list.length){view.innerHTML=html+`<div class="empty">該当する試合がありません</div>`;return bind();}
+  if(!list.length){view.innerHTML=html+`<div class="empty">${t("noMatch")}</div>`;return bind();}
   let last="";
   list.forEach(m=>{
     if(current==="all"&&favTeam&&!(m.h===favTeam||m.a===favTeam)&&!onlyJP&&!onlyFeat)return;
@@ -601,36 +811,36 @@ function card(m){
   else if(m.feat)cls.push("feat");
   if(st==="FT")cls.push("done");
   const badges=[];
-  if(st==="LIVE")badges.push(`<span class="badge bl">● LIVE${r&&r.minute?` ${r.minute}'`:""}</span>`);
-  if(m.jp)badges.push(`<span class="badge bj">🇯🇵 日本</span>`);
-  else if(m.feat)badges.push(`<span class="badge bf">★ 注目</span>`);
+  if(st==="LIVE")badges.push(`<span class="badge bl">● ${t("live")}${r&&r.minute?` ${r.minute}'`:""}</span>`);
+  if(m.jp)badges.push(`<span class="badge bj">${t("jpBadge")}</span>`);
+  else if(m.feat)badges.push(`<span class="badge bf">${t("featBadge")}</span>`);
   if(m.knock)badges.push(`<span class="badge bk">${grpLabel(m.grp)}</span>`);
-  else badges.push(`<span class="badge bg">グループ${m.grp}</span>`);
+  else badges.push(`<span class="badge bg">${t("grp")} ${m.grp}</span>`);
   let midHTML;
   if(r&&r.sh!=null&&(st==="LIVE"||st==="FT")){
     midHTML=`<span class="sc">${r.sh} – ${r.sa}</span>`;
   } else if(m.tbd){
-    midHTML=`<span class="vs">未定</span>`;
+    midHTML=`<span class="vs">${t("tbd")}</span>`;
   } else {
     midHTML=`<span class="kt">${fmtTime(m)}</span><span class="ku">JST</span>`;
   }
-  const topRight=st==="FT"?`<span style="font-size:10.5px;color:var(--muted)">終了</span>`:
+  const topRight=st==="FT"?`<span style="font-size:10.5px;color:var(--muted)">${t("ft")}</span>`:
                  st==="LIVE"?"":
                  `<span style="font-size:10.5px;color:var(--muted)">${dLabel(dt(m))}</span>`;
   return `<div class="${cls.join(" ")}">
   <div class="mc-top">${badges.join(" ")}<span class="mc-top-r">${topRight}</span></div>
   <div class="mc-body">
     <div class="mc-teams">
-      <div class="mct"><span class="tf">${m.fh}</span><div class="tn">${m.h}</div></div>
+      <div class="mct"><span class="tf">${m.fh}</span><div class="tn">${tn(m.h)}</div></div>
       <div class="mcmid">${midHTML}</div>
-      <div class="mct"><span class="tf">${m.fa}</span><div class="tn">${m.a}</div></div>
+      <div class="mct"><span class="tf">${m.fa}</span><div class="tn">${tn(m.a)}</div></div>
     </div>
   </div>
   <div class="mc-foot">
     <span class="mc-city">📍 ${m.city}</span>
     <div class="mc-actions">
       <button class="ibtn ${on?"on":""}" onclick="toggleNotif(${m.id})">${on?"🔔":"🔕"}</button>
-      <button class="wbtn" onclick="openWatch(${m.id})">▶ 視聴</button>
+      <button class="wbtn" onclick="openWatch(${m.id})">${t("watch")}</button>
     </div>
   </div>
 </div>`;
@@ -652,17 +862,17 @@ function renderHero(){
     :`<span class="hvs">VS</span>`;
   heroSlot.innerHTML=`<div class="${hcls}">
   <div class="hero-top">
-    ${live?`<span class="live-badge">● LIVE${r&&r.minute?` ${r.minute}'`:""}</span>`:(m.jp?"🇯🇵 次の日本戦":"次の試合")}
+    ${live?`<span class="live-badge">● ${t("live")}${r&&r.minute?` ${r.minute}'`:""}</span>`:(m.jp?t("heroJPNext"):t("heroNext"))}
     <span>・ ${grpLabel(m.grp)}</span>
   </div>
   <div class="hero-body">
     <div class="hero-teams">
-      <div class="hteam"><span class="hfl">${m.fh}</span><div class="hnm">${m.h}</div></div>
+      <div class="hteam"><span class="hfl">${m.fh}</span><div class="hnm">${tn(m.h)}</div></div>
       <div class="hmid">${scoreHTML}</div>
-      <div class="hteam"><span class="hfl">${m.fa}</span><div class="hnm">${m.a}</div></div>
+      <div class="hteam"><span class="hfl">${m.fa}</span><div class="hnm">${tn(m.a)}</div></div>
     </div>
   </div>
-  <div class="hero-foot">📍 ${m.city}　${dLabelFull(dt(m))} ${live?"進行中":fmtTime(m)+" キックオフ"}
+  <div class="hero-foot">📍 ${m.city}　${dLabelFull(dt(m))} ${live?t("heroLive"):fmtTime(m)+" "+t("heroKO")}
     ${live?"":`<div class="cd-row" id="cd"></div>`}
   </div>
 </div>`;
@@ -689,26 +899,24 @@ function renderTable(){
   let html="";
   if(!hasResult){
     html+=`<div style="background:var(--card);border-radius:var(--r);padding:16px;margin:14px 0;border:1px solid var(--line);box-shadow:var(--shadow)">
-      <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--txt)">📡 ライブデータ未接続</div>
-      <div style="font-size:12.5px;color:var(--muted);line-height:1.8">
-        試合結果を自動反映するには、設定タブでAPIキーを入力してください。<br>
-        <b style="color:var(--knock)">football-data.org</b> で無料登録（2分）→ APIキーをコピー → 設定タブに貼り付け
-      </div>
+      <div style="font-weight:700;font-size:14px;margin-bottom:8px;color:var(--txt)">${t("tableNoData")}</div>
+      <div style="font-size:12.5px;color:var(--muted);line-height:1.8">${t("tableNoDataDesc")}</div>
       <div style="display:flex;gap:8px;margin-top:12px">
-        <button onclick="document.querySelector('[data-tab=set]').click()" style="flex:1;padding:10px;border-radius:9px;border:none;background:#1a2a4e;color:#f5c842;font-weight:700;font-size:13px;cursor:pointer">⚙️ 設定を開く</button>
-        <button onclick="opts.demo=true;save();syncLive().then(()=>{render();toast('デモ表示をONにしました')})" style="flex:1;padding:10px;border-radius:9px;border:1px solid var(--line2);background:var(--card2);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer">デモ表示</button>
+        <button onclick="document.querySelector('[data-tab=set]').click()" style="flex:1;padding:10px;border-radius:9px;border:none;background:#1a2a4e;color:#f5c842;font-weight:700;font-size:13px;cursor:pointer">${t("openSet")}</button>
+        <button onclick="opts.demo=true;save();syncLive().then(()=>{render();toast(t('toastDemoOn'))})" style="flex:1;padding:10px;border-radius:9px;border:1px solid var(--line2);background:var(--card2);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer">${t("demoBtn")}</button>
       </div>
     </div>`;
   }
-  html+=`<div class="sec-note">上位2チーム（緑の左線）が決勝トーナメント進出圏。日本は赤字で表示。</div>`;
+  html+=`<div class="sec-note">${t("tableNote")}</div>`;
+  const hdr=t("tableHdr");
   Object.keys(S).forEach(g=>{
     html+=`<div class="grp-card">
-      <div class="grp-head"><span class="glbl">GROUP ${g}</span><h4>グループ ${g}</h4></div>
-      <table><thead><tr><th>チーム</th><th>試</th><th>勝</th><th>分</th><th>負</th><th>GD</th><th>勝点</th></tr></thead><tbody>`;
+      <div class="grp-head"><span class="glbl">GROUP ${g}</span><h4>${t("grp")} ${g}</h4></div>
+      <table><thead><tr>${hdr.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>`;
     S[g].forEach((x,i)=>{
       const qual=i<2,jp=x.t==="日本";
       html+=`<tr class="${qual?"qual":""} ${jp?"jp-row":""}">
-        <td class="tm"><span class="fl">${flagOf[x.t]||""}</span>${x.t}</td>
+        <td class="tm"><span class="fl">${flagOf[x.t]||""}</span>${tn(x.t)}</td>
         <td>${x.p}</td><td>${x.w}</td><td>${x.d}</td><td>${x.l}</td>
         <td>${x.gd>0?"+":""}${x.gd}</td><td class="pts">${x.pts}</td></tr>`;
     });
@@ -721,85 +929,93 @@ function renderTable(){
 function renderSettings(){
   const jpN=MATCHES.filter(m=>m.jp).length;
   const trig=("Notification"in window)&&("showTrigger"in (window.Notification?.prototype||{}));
-  const swState=swReg?"登録済み":(location.protocol==="file:"?"未登録（file://）":"未登録");
+  const swState=swReg?t("swReg"):(location.protocol==="file:"?t("swFile"):t("swNone"));
   const statusPill=liveOK
-    ?`<span class="status-pill pill-ok">✓ 同期中 ${fmtLastSync()}</span>`
+    ?`<span class="status-pill pill-ok">${t("pillOk")} ${fmtLastSync()}</span>`
     :keyMissing
-    ?`<span class="status-pill pill-err">⚠ APIキー未設定</span>`
-    :`<span class="status-pill pill-off">○ 未接続</span>`;
+    ?`<span class="status-pill pill-err">${t("pillErr")}</span>`
+    :`<span class="status-pill pill-off">${t("pillOff")}</span>`;
+  const timingOpts=[10,15,30,60,120].map(v=>{
+    const lbl=v>=60?`${v/60}${t("hrBefore")}`:` ${v}${t("minBefore")}`;
+    return`<option value="${v}" ${opts.lead==v?"selected":""}>${lbl}</option>`;
+  }).join("");
   view.innerHTML=`
 <div class="scard">
-  <h3>🔔 通知設定</h3>
-  <div class="srow">
-    <div><div class="slab">通知を有効にする</div><div class="sdesc">キックオフ前に知らせる</div></div>
-    <div class="toggle ${opts.enabled?"on":""}" id="tgEn"></div>
+  <h3>${t("setLangTitle")}</h3>
+  <div class="lang-tabs" style="margin:8px 0 4px">
+    <button class="lang-tab ${langMode==="vn"?"active":""}" onclick="setLangTab('vn')">🇻🇳 Tiếng Việt</button>
+    <button class="lang-tab ${langMode==="jp"?"active":""}" onclick="setLangTab('jp')">🇯🇵 日本語</button>
+    <button class="lang-tab ${langMode==="en"?"active":""}" onclick="setLangTab('en')">🇺🇸 English</button>
   </div>
-  <div class="srow">
-    <div class="slab">通知タイミング</div>
-    <select class="mini" id="lead">${[10,15,30,60,120].map(v=>`<option value="${v}" ${opts.lead==v?"selected":""}>${v>=60?(v/60)+"時間":v+"分"}前</option>`).join("")}</select>
-  </div>
-  <div class="srow">
-    <div><div class="slab">🇯🇵 日本代表戦を自動ON</div><div class="sdesc">全${jpN}試合を自動登録</div></div>
-    <div class="toggle ${opts.jpAuto?"on":""}" id="tgJP"></div>
-  </div>
-  <div class="srow">
-    <div><div class="slab">★ 注目試合を自動ON</div><div class="sdesc">強豪対決・開幕・決勝など</div></div>
-    <div class="toggle ${opts.featAuto?"on":""}" id="tgFt"></div>
-  </div>
-  <button class="sbtn sbtn-ghost" id="testN">通知をテスト送信</button>
-  <div class="snote">登録中 <b>${notifSet.size}</b> 件　SW: ${swState}　予約通知: ${trig?"OS予約（閉じても発火）":"起動中タイマー"}</div>
 </div>
 
 <div class="scard">
-  <h3>📡 リアルタイム結果連携</h3>
+  <h3>${t("setNotif")}</h3>
+  <div class="srow">
+    <div><div class="slab">${t("setEnable")}</div><div class="sdesc">${t("setEnableDesc")}</div></div>
+    <div class="toggle ${opts.enabled?"on":""}" id="tgEn"></div>
+  </div>
+  <div class="srow">
+    <div class="slab">${t("setTiming")}</div>
+    <select class="mini" id="lead">${timingOpts}</select>
+  </div>
+  <div class="srow">
+    <div><div class="slab">${t("setJPAuto")}</div><div class="sdesc">${t("jpMatchCount").replace("{n}",jpN)}</div></div>
+    <div class="toggle ${opts.jpAuto?"on":""}" id="tgJP"></div>
+  </div>
+  <div class="srow">
+    <div><div class="slab">${t("setFeatAuto")}</div><div class="sdesc">${t("featDesc")}</div></div>
+    <div class="toggle ${opts.featAuto?"on":""}" id="tgFt"></div>
+  </div>
+  <button class="sbtn sbtn-ghost" id="testN">${t("setTestNotif")}</button>
+  <div class="snote">${t("notifCount").replace("{n}",notifSet.size).replace("{sw}",swState).replace("{trig}",trig?t("osTrig"):t("timerTrig"))}</div>
+</div>
+
+<div class="scard">
+  <h3>${t("setLive")}</h3>
   <div style="padding:12px 15px 0">${statusPill}</div>
 
   <div class="srow">
-    <div><div class="slab">デモ表示モード</div><div class="sdesc">APIなしで結果・順位表のUIを確認</div></div>
+    <div><div class="slab">${t("setDemo")}</div><div class="sdesc">${t("setDemoDesc")}</div></div>
     <div class="toggle ${opts.demo?"on":""}" id="tgDemo"></div>
   </div>
 
   <div class="srow scol">
-    <div class="slab">🔑 APIキー（football-data.org）</div>
-    <input class="mini" id="fdKey" placeholder="例: abcdef1234567890abcdef1234567890" value="${opts.fdKey||""}">
-    <div class="sdesc">無料登録でキー取得。Netlifyにデプロイ済みの場合は環境変数が推奨。</div>
+    <div class="slab">${t("apiKeyLabel")}</div>
+    <input class="mini" id="fdKey" placeholder="abcdef1234567890abcdef1234567890" value="${opts.fdKey||""}">
+    <div class="sdesc">${t("apiKeyDesc")}</div>
   </div>
   <div class="sstep">
-    <p>📋 無料APIキー取得手順（2分）</p>
-    <ol>
-      <li><a href="https://www.football-data.org/client/register" target="_blank" rel="noopener">football-data.org</a> で無料登録</li>
-      <li>確認メールのリンクをクリック</li>
-      <li>ダッシュボードで <code>API Token</code> をコピー</li>
-      <li>上の入力欄に貼り付けて「保存・同期」をクリック</li>
-    </ol>
+    <p>${t("apiStepTitle")}</p>
+    <ol>${t("apiStep").map((s,i)=>i===0?`<li><a href="https://www.football-data.org/client/register" target="_blank" rel="noopener">football-data.org</a> ${s.replace(/^.*?football-data\.org\s*/,"")}</li>`:`<li>${s}</li>`).join("")}</ol>
   </div>
 
   <div class="srow scol" style="border-top:1px solid var(--line)">
-    <div class="slab">🔧 Netlify 環境変数（推奨）</div>
-    <div class="sdesc">Netlifyダッシュボード → Site settings → Environment variables → <code>FOOTBALL_DATA_KEY</code> にAPIキーを設定すると、キーが公開されず安全に自動同期されます。</div>
+    <div class="slab">${t("netlifyLabel")}</div>
+    <div class="sdesc">${t("netlifyDesc")} → <code>FOOTBALL_DATA_KEY</code></div>
   </div>
 
   <div class="srow scol" style="border-top:1px solid var(--line)">
-    <div class="slab">🔧 独自プロキシURL</div>
+    <div class="slab">${t("proxyLabel")}</div>
     <input class="mini" id="apiBase" placeholder="https://your-proxy.example.com" value="${opts.apiBase||""}">
   </div>
-  <button class="sbtn sbtn-primary" id="saveApi">保存して同期</button>
+  <button class="sbtn sbtn-primary" id="saveApi">${t("saveSync")}</button>
 </div>
 
 <div class="scard">
-  <h3>⚽ お気に入りチーム</h3>
+  <h3>${t("setFav")}</h3>
   <div class="srow">
-    <div><div class="slab">応援チーム</div><div class="sdesc">日程タブの絞り込みに使用</div></div>
-    <select class="mini" id="fav" style="max-width:160px"><option value="">未設定</option>${teamsList().map(t=>`<option ${t===favTeam?"selected":""}>${t}</option>`).join("")}</select>
+    <div><div class="slab">${t("favLabel")}</div><div class="sdesc">${t("favDesc")}</div></div>
+    <select class="mini" id="fav" style="max-width:160px"><option value="">${t("favNone")}</option>${teamsList().map(tm=>`<option ${tm===favTeam?"selected":""}>${tm}</option>`).join("")}</select>
   </div>
 </div>
 
 <div class="scard">
-  <h3>📲 スマホにインストール</h3>
+  <h3>${t("setInstall")}</h3>
   <div class="snote" style="padding-top:12px">
-    <b>iPhone (Safari):</b> 共有ボタン →「ホーム画面に追加」<br>
-    <b>Android (Chrome):</b> メニュー(⋮)→「アプリをインストール」<br>
-    <span style="color:var(--knock)">※ HTTPS公開後（Netlifyデプロイ後）に有効になります。</span>
+    <b>iPhone:</b> ${t("installiOS")}<br>
+    <b>Android:</b> ${t("installAndroid")}<br>
+    <span style="color:var(--knock)">${t("installNote")}</span>
   </div>
 </div>`;
   bindSettings();
@@ -831,8 +1047,8 @@ async function scheduleAll(){
 }
 async function toggleNotif(id){
   const m=byId(id);
-  if(notifSet.has(id)){notifSet.delete(id);toast("通知をオフにしました");}
-  else{if(!(await ensurePerm()))return;notifSet.add(id);opts.enabled=true;toast(`🔔 ${m.h} 戦の通知をON`);}
+  if(notifSet.has(id)){notifSet.delete(id);toast(t("toastNotifOff"));}
+  else{if(!(await ensurePerm()))return;notifSet.add(id);opts.enabled=true;toast(t("toastNotifOn").replace("{team}",tn(m.h)));}
   save();await scheduleAll();render();
 }
 function applyAuto(){
@@ -860,12 +1076,23 @@ function renderWatchLinks(){
 function setLangTab(mode){
   langMode=mode;
   localStorage.setItem(LS.lang,mode);
+  updateNavLang();
   renderWatchLinks();
+  render();
+}
+function updateNavLang(){
+  const u=UI[langMode]||UI.jp;
+  document.getElementById("nlToday").textContent=u.navToday;
+  document.getElementById("nlAll").textContent=u.navAll;
+  document.getElementById("nlTable").textContent=u.navTable;
+  document.getElementById("nlSet").textContent=u.navSet;
+  const wc=document.getElementById("wsClose");if(wc)wc.textContent=u.closeBtn;
+  updateLiveDot();
 }
 function openWatch(id){
   _curMatchId=id;
   const m=byId(id);
-  document.getElementById("wsTitle").textContent=`${m.h} vs ${m.a}`;
+  document.getElementById("wsTitle").textContent=`${tn(m.h)} vs ${tn(m.a)}`;
   document.getElementById("wsSub").textContent=`${dLabelFull(dt(m))} ${fmtTime(m)} JST ・ 📍${m.city}`;
   renderWatchLinks();
   sheetEl.classList.add("show");
@@ -880,7 +1107,7 @@ function bind(){
   const cf=document.getElementById("cFeat");if(cf)cf.onclick=()=>{onlyFeat=!onlyFeat;onlyJP=false;render();};
 }
 function bindSettings(){
-  document.getElementById("tgEn").onclick=async()=>{if(!opts.enabled&&!(await ensurePerm()))return;opts.enabled=!opts.enabled;save();await scheduleAll();renderSettings();toast(opts.enabled?"通知を有効化":"通知を無効化");};
+  document.getElementById("tgEn").onclick=async()=>{if(!opts.enabled&&!(await ensurePerm()))return;opts.enabled=!opts.enabled;save();await scheduleAll();renderSettings();toast(opts.enabled?t("toastOn"):t("toastOff"));};
   document.getElementById("lead").onchange=e=>{opts.lead=+e.target.value;save();scheduleAll();};
   document.getElementById("tgJP").onclick=()=>{opts.jpAuto=!opts.jpAuto;if(opts.jpAuto)applyAuto();save();scheduleAll();renderSettings();};
   document.getElementById("tgFt").onclick=()=>{opts.featAuto=!opts.featAuto;if(opts.featAuto)applyAuto();save();scheduleAll();renderSettings();};
@@ -889,14 +1116,14 @@ function bindSettings(){
     opts.fdKey=document.getElementById("fdKey").value.trim();
     opts.apiBase=document.getElementById("apiBase").value.trim();
     save();await syncLive();renderSettings();render();
-    toast(liveOK?"✅ 同期しました":keyMissing?"⚠ Netlify環境変数にAPIキーを設定してください":"❌ 接続できませんでした");
+    toast(liveOK?t("toastSynced"):keyMissing?t("toastNoKey"):t("toastNoConn"));
   };
   document.getElementById("fav").onchange=e=>{favTeam=e.target.value;save();};
   document.getElementById("testN").onclick=async()=>{
     if(!(await ensurePerm()))return;
-    if(swReg)swReg.showNotification("⚽ World Cup 2026",{body:"テスト通知です。",icon:"./icon.svg"});
-    else new Notification("⚽ World Cup 2026",{body:"テスト通知です。"});
-    toast("テスト通知を送信しました");
+    if(swReg)swReg.showNotification("⚽ World Cup 2026",{body:t("setTestNotif"),icon:"./icon.svg"});
+    else new Notification("⚽ World Cup 2026",{body:t("setTestNotif")});
+    toast(t("toastTest"));
   };
 }
 
@@ -918,6 +1145,7 @@ async function init(){
   if("serviceWorker"in navigator&&location.protocol!=="file:"){
     try{swReg=await navigator.serviceWorker.register("./sw.js");await navigator.serviceWorker.ready;}catch(_){}
   }
+  updateNavLang();
   if(opts.jpAuto||opts.featAuto)applyAuto();
   await syncLive();
   if(opts.enabled&&("Notification"in window)&&Notification.permission==="granted")await scheduleAll();
