@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <rect width="192" height="192" rx="44" fill="#12161d"/>
+  <circle cx="96" cy="96" r="58" fill="none" stroke="#c9a96a" stroke-width="3" opacity="0.5"/>
+  <text x="96" y="118" text-anchor="middle" font-family="Georgia, serif" font-weight="700"
+        font-size="74" fill="#e6e8ee" letter-spacing="-2">26</text>
+  <text x="96" y="150" text-anchor="middle" font-family="Arial, sans-serif" font-weight="700"
+        font-size="13" fill="#c9a96a" letter-spacing="4">WORLD CUP</text>
+</svg>
