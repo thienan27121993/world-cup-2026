@@ -3,7 +3,7 @@
    - 予約通知 (Notification Triggers / TimestampTrigger) の発火基盤
    - 本物の Web Push (サーバー → push イベント) の受け口
 */
-const CACHE = 'wc26-v2';
+const CACHE = 'wc26-v4';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.svg'];
 
 self.addEventListener('install', e => {
